@@ -15,7 +15,7 @@
             "email": "garbuzivan90@ya.ru"
         }
     ],
-    "minimum-stability": "v1.0",
+    "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
             "GarbuzIvan\\ImageManager\\": "src/"
