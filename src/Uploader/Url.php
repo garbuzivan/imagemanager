@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager\Uploader;
 
-use GarbuzIvan\ImageManager\Exception\FilterValidateUrlException;
-use GarbuzIvan\ImageManager\Exception\MimeTypeNotAvailableException;
-use GarbuzIvan\ImageManager\Exception\UrlNotLoadException;
+use GarbuzIvan\ImageManager\Exceptions\FilterValidateUrlException;
+use GarbuzIvan\ImageManager\Exceptions\MimeTypeNotAvailableException;
+use GarbuzIvan\ImageManager\Exceptions\UrlNotLoadException;
 use GarbuzIvan\ImageManager\ExceptionCode;
 
 class Url extends AbstractUploader
