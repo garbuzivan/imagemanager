@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager\Uploader;
 
-use GarbuzIvan\ImageManager\Exception\UrlException;
+use GarbuzIvan\ImageManager\Exception\FilterValidateUrlException;
 use GarbuzIvan\ImageManager\Exception\MimeTypeNotAvailableException;
 use GarbuzIvan\ImageManager\Exception\UrlNotLoadException;
 use GarbuzIvan\ImageManager\ExceptionCode;
@@ -14,7 +14,7 @@ class Url extends AbstractUploader
     /**
      * @param string $url
      * @return string
-     * @throws UrlException
+     * @throws FilterValidateUrlException
      * @throws MimeTypeNotAvailableException
      * @throws UrlNotLoadException
      */
@@ -22,7 +22,7 @@ class Url extends AbstractUploader
     {
         // Exception FILTER VALIDATE URL
         if (!filter_var($url, FILTER_VALIDATE_URL)) {
-            throw new UrlException(ExceptionCode::$FILTER_VALIDATE_URL);
+            throw new FilterValidateUrlException(ExceptionCode::$FILTER_VALIDATE_URL);
         }
 
         $ch = curl_init($url);

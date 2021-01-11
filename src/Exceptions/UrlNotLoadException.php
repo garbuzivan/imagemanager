@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GarbuzIvan\ImageManager\Exception;
+namespace GarbuzIvan\ImageManager\Exceptions;
 
 class UrlNotLoadException extends \Exception
 {
