@@ -9,16 +9,16 @@ class Configuration
     /**
      * URL path to file
      *
-     * @var string|bool
+     * @var string
      */
-    protected $pathUrl = false;
+    protected $pathUrl = '/storage/images/';
 
     /**
      * Disk path to file
      *
-     * @var string|bool
+     * @var string
      */
-    protected $pathDisk = false;
+    protected $pathDisk = '/storage/images/';
 
     /**
      * Checking file existence by hash
@@ -99,7 +99,7 @@ class Configuration
      */
     public function getPathDisk(): string
     {
-        return $this->pathUrl ?? '/';
+        return $this->pathDisk ?? '/';
     }
 
     /**
@@ -151,7 +151,7 @@ class Configuration
      */
     public function setImageSize(array $imageSize): void
     {
-        $this->userAgent = $imageSize;
+        $this->imageSize = $imageSize;
     }
 
     /**
@@ -160,7 +160,7 @@ class Configuration
     public function addImageSize(array $imageSize): void
     {
         if (count($imageSize) == 2) {
-            $this->userAgent[] = $imageSize;
+            $this->imageSize[] = $imageSize;
         }
     }
 
@@ -169,7 +169,7 @@ class Configuration
      */
     public function getImageSize(): array
     {
-        return $this->userAgent;
+        return $this->imageSize;
     }
 
     /**
