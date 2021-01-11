@@ -6,8 +6,21 @@ namespace GarbuzIvan\ImageManager;
 
 class Hash
 {
-    static public function getHashCurl($object): string
+    /**
+     * @param $string
+     * @return string
+     */
+    static public function getHashString($string): string
     {
-        return sha1($object);
+        return sha1($string);
+    }
+
+    /**
+     * @param $filePath
+     * @return string
+     */
+    static public function getHashFile($filePath): string
+    {
+        return sha1_file($filePath);
     }
 }

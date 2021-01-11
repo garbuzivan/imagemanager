@@ -193,7 +193,7 @@ class Configuration
      */
     public function hashActivation(): void
     {
-        $this->hash = true;
+        $this->hash = false;
     }
 
     /**

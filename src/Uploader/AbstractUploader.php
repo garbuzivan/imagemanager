@@ -21,7 +21,6 @@ abstract class AbstractUploader
     public function __construct(Configuration $config)
     {
         $this->config = $config;
-        return $this;
     }
 
     /**
