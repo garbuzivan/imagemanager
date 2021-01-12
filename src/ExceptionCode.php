@@ -11,4 +11,5 @@ class ExceptionCode
     public static $MIME_TYPE_NOT_AVAILABLE = 'Тип файла не может быть обработан';
     public static $URL_NOT_LOAD = 'URL не доступен для загрузки';
     public static $MAKE_DIRECTORY = 'Ошибка создания директории хранения изображений';
+    public static $FILE_NOT_EXISTS = 'Файл не найден';
 }
