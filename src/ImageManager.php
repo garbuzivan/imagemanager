@@ -7,7 +7,6 @@ namespace GarbuzIvan\ImageManager;
 use GarbuzIvan\ImageManager\Exceptions\FilterValidateUrlException;
 use GarbuzIvan\ImageManager\Exceptions\MimeTypeNotAvailableException;
 use GarbuzIvan\ImageManager\Exceptions\UrlNotLoadException;
-use GarbuzIvan\ImageManager\Uploader\Url;
 use GarbuzIvan\ImageManager\Hash;
 
 class ImageManager
@@ -46,11 +45,35 @@ class ImageManager
         $this->config = $config;
     }
 
+    /**
+     * @param string $url
+     * @return $this
+     */
     public function loadUrl(string $url): ImageManager
     {
         try {
-            $this->object = (new Url($this->config))->load($url);
+            $this->object = (new \GarbuzIvan\ImageManager\Uploader\Url($this->config))->load($url);
         } catch (FilterValidateUrlException | MimeTypeNotAvailableException | UrlNotLoadException | \Exception $e) {
+            $this->error = ['error' => $e->getMessage()];
+        }
+        return $this;
+    }
+
+    public function loadFile(string $file): ImageManager
+    {
+        try {
+            $this->object = (new \GarbuzIvan\ImageManager\Uploader\File($this->config))->load($file);
+        } catch (\Exception $e) {
+            $this->error = ['error' => $e->getMessage()];
+        }
+        return $this;
+    }
+
+    public function loadBase64(string $base64): ImageManager
+    {
+        try {
+            $this->object = (new \GarbuzIvan\ImageManager\Uploader\Base64($this->config))->load($base64);
+        } catch (\Exception $e) {
             $this->error = ['error' => $e->getMessage()];
         }
         return $this;
@@ -116,9 +139,15 @@ class ImageManager
         return false;
     }
 
-    public function pipes()
+    /**
+     * @return $this
+     */
+    public function pipes(): ImageManager
     {
-        $this->config->getPipes();
+        foreach($this->config->getPipes() as $className){
+            $class = new $className;
+            call_user_func($class, $this->file);
+        }
         return $this;
     }
 
@@ -139,12 +168,12 @@ class ImageManager
     }
 
     /**
-     * @param string $name
+     * @param string|null $name
      * @param string $hash
      * @param string $extension
      * @return string
      */
-    public function getNameImage(string $name, string $hash, string $extension): string
+    public function getNameImage(?string $name, string $hash, string $extension): string
     {
         $name = preg_replace('~[^0-9a-zA-Z-_\.]~isuU', '', $name);
         $name = mb_strlen($name) == 0 ? $hash : $name;

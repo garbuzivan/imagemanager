@@ -6,5 +6,5 @@ namespace GarbuzIvan\ImageManager\Pipes;
 
 abstract class AbstractPipes
 {
-    abstract public function handle();
+    abstract public function __invoke(array $file): array;
 }
