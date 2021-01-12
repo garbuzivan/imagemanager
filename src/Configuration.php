@@ -21,6 +21,13 @@ class Configuration
     protected $pathDisk = '/storage/images/';
 
     /**
+     * Disk path to file
+     *
+     * @var string
+     */
+    protected $path = '/storage/images/';
+
+    /**
      * Checking file existence by hash
      *
      * @var bool
@@ -100,6 +107,22 @@ class Configuration
     public function getPathDisk(): string
     {
         return $this->pathDisk ?? '/';
+    }
+
+    /**
+     * @param string $path
+     */
+    public function setPath(string $path): void
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath(): string
+    {
+        return $this->path ?? '/';
     }
 
     /**

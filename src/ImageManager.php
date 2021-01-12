@@ -66,16 +66,15 @@ class ImageManager
     {
         if (!$this->isError()) {
             // args
+            $extension = '.' . (new File)->getExtensionFromString($this->object, $this->config->getMimeTypes());
             $hash = (new Hash)->getHashString($this->object);
-            $name = is_null($path) ?
-                $hash . '.' . (new File)->getExtensionFromString($this->object, $this->config->getMimeTypes())
-                :
-                preg_replace('~[^0-9a-zA-Z-_\.]~isuU', '', $name);
-            $path = !is_null($path) ? $path : date('/Y/m/d/H/m/');
-            $title = !is_null($title) ? $title : $hash;
-            $disk = $this->config->getPathDisk() . $path;
+            $name = $this->getNameImage($name, $hash, $extension);
+            $pathDate = !is_null($path) ? $path : date('/Y/m/d/H/m/');
+            $title = !is_null($title) ? $title : null;
+            $disk = $this->config->getPathDisk() . $pathDate;
             $disk = (str_replace('//', '/', $disk));
-            $url = $this->config->getPathUrl() . $path;
+            $path = (str_replace('//', '/', $pathDate . $name));
+            $url = $this->config->getPathUrl() . $pathDate . $name;
             // create path
             try {
                 $makeDirectory = (new File)->makeDirectory($disk);
@@ -85,8 +84,16 @@ class ImageManager
             }
             // save image to file
             if ($makeDirectory) {
-                (new File)->save($disk . $name, $this->object);
-                $this->file = ['name' => $name, 'disk' => $disk . $name, 'url' => $url . $name];
+                $disk .= $name;
+                (new File)->save($disk, $this->object);
+                $this->file = [
+                    'hash' => $hash,
+                    'title' => $title,
+                    'name' => $name,
+                    'disk' => $disk,
+                    'path' => $path,
+                    'url' => $url
+                ];
             }
         }
         return $this;
@@ -98,9 +105,21 @@ class ImageManager
     public function getImage()
     {
         if (!$this->isError() && !is_null($this->file)) {
+            $size = filesize($this->file['disk']);
+            $imageInfo = getimagesize($this->file['disk']);
+            $this->file['width'] = $imageInfo[0];
+            $this->file['height'] = $imageInfo[1];
+            $this->file['type'] = $imageInfo['mime'];
+            $this->file['size'] = $size;
             return $this->file;
         }
         return false;
+    }
+
+    public function pipes()
+    {
+        $this->config->getPipes();
+        return $this;
     }
 
     /**
@@ -119,4 +138,17 @@ class ImageManager
         return $this->error;
     }
 
+    /**
+     * @param string $name
+     * @param string $hash
+     * @param string $extension
+     * @return string
+     */
+    public function getNameImage(string $name, string $hash, string $extension): string
+    {
+        $name = preg_replace('~[^0-9a-zA-Z-_\.]~isuU', '', $name);
+        $name = mb_strlen($name) == 0 ? $hash : $name;
+        $name = str_ireplace($extension, '', $name) . $extension;
+        return $name;
+    }
 }

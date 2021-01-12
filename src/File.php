@@ -35,9 +35,7 @@ class File
      */
     public function save($file, $output): bool
     {
-        $fh = fopen($file, 'w');
-        fwrite($fh, $output);
-        fclose($fh);
+        file_put_contents($file, $output);
         return file_exists($file);
     }
 

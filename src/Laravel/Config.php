@@ -34,6 +34,7 @@ class Config extends Configuration
     {
         $this->setPathDisk(config($this->configFile . '.disks.disk'));
         $this->setPathUrl(config($this->configFile . '.disks.url'));
+        $this->setPath(config($this->configFile . '.disks.path'));
         $mimeTypes = config($this->configFile . '.mime_types');
         if(is_array($mimeTypes)){
             $this->setMimeTypes($mimeTypes);
