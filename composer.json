@@ -29,5 +29,12 @@
     },
     "scripts": {
         "test": "phpunit"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "GarbuzIvan\\ImageManager\\ImageManagerServiceProvider"
+            ]
+        }
     }
 }
