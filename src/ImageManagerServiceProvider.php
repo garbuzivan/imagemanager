@@ -8,6 +8,11 @@ use Illuminate\Support\ServiceProvider;
 
 class ImageManagerServiceProvider extends ServiceProvider
 {
+    /**
+     * Bootstrap the application services...
+     *
+     * @return void
+     */
     public function boot()
     {
         $configPath = $this->configPath();
@@ -15,8 +20,15 @@ class ImageManagerServiceProvider extends ServiceProvider
         $this->publishes([
             $configPath . '/imagemanager.php' => $this->publishPath('imagemanager.php'),
         ], 'config');
+
+        $this->loadMigrationsFrom(__DIR__ . '/../migrations');
     }
 
+    /**
+     * Register the application services.
+     *
+     * @return void
+     */
     public function register()
     {
 

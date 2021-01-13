@@ -4,7 +4,14 @@
 
 `composer require garbuzivan/imagemanager`
 
-`php artisan vendor:publish --provider="GarbuzIvan\ImageManager\ImageManagerServiceProvider"`
+### Laravel
+и опубликовать конфигурацию
+
+`php artisan vendor:publish  --force --provider="GarbuzIvan\ImageManager\ImageManagerServiceProvider" --tag="config"`
+
+Теперь нужно применить миграции:
+
+`php artisan migrate`
 
 ## Архитектура библиотеки
 

@@ -7,7 +7,6 @@ namespace GarbuzIvan\ImageManager;
 use GarbuzIvan\ImageManager\Exceptions\FilterValidateUrlException;
 use GarbuzIvan\ImageManager\Exceptions\MimeTypeNotAvailableException;
 use GarbuzIvan\ImageManager\Exceptions\UrlNotLoadException;
-use Intervention\Image\ImageManagerStatic as Image;
 
 class ImageManager
 {
