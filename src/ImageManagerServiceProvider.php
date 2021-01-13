@@ -4,23 +4,35 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager;
 
-use Illuminate\Foundation\Application as LaravelApplication;
 use Illuminate\Support\ServiceProvider;
 
 class ImageManagerServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $configPath = $this->configPath();
 
+        $this->publishes([
+            $configPath . '/imagemanager.php' => $this->publishPath('imagemanager.php'),
+        ], 'config');
     }
 
     public function register()
     {
-        //$this->mergeConfigFrom(__DIR__ . '/../config/mediaimage.php', 'mediaimage');
-        if ($this->app instanceof LaravelApplication && $this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__ . '/../config/mediaimage.php' => config_path('imagemanager.php'),
-            ], 'config');
+
+    }
+
+    protected function configPath()
+    {
+        return __DIR__ . '/../config';
+    }
+
+    protected function publishPath($configFile)
+    {
+        if (function_exists('config_path')) {
+            return config_path($configFile);
+        } else {
+            return base_path('config/' . $configFile);
         }
     }
 }
