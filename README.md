@@ -4,6 +4,8 @@
 
 `composer require garbuzivan/imagemanager`
 
+`php artisan vendor:publish --provider="GarbuzIvan\ImageManager\ImageManagerServiceProvider"`
+
 ## Архитектура библиотеки
 
 ## Использование

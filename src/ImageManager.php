@@ -7,7 +7,7 @@ namespace GarbuzIvan\ImageManager;
 use GarbuzIvan\ImageManager\Exceptions\FilterValidateUrlException;
 use GarbuzIvan\ImageManager\Exceptions\MimeTypeNotAvailableException;
 use GarbuzIvan\ImageManager\Exceptions\UrlNotLoadException;
-use GarbuzIvan\ImageManager\Hash;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ImageManager
 {
@@ -115,7 +115,30 @@ class ImageManager
                     'name' => $name,
                     'disk' => $disk,
                     'path' => $path,
-                    'url' => $url
+                    'url' => $url,
+                    'cache' => [],
+                ];
+            }
+        }
+        return $this;
+    }
+
+    public function saveResize(): ImageManager
+    {
+        foreach ($this->config->getImageSize() as $size) {
+            $width = $size[0] > 0 ? intval($size[0]) : null;
+            $height = $size[1] > 0 ? intval($size[1]) : null;
+            $key = $width . 'x' . $height;
+            $name = $key . '-' . $this->file['name'];
+            Image(array('driver' => 'imagick'))::make($this->file['disk'])->resize($width, $height)->save($name);
+            $disk = str_replace($this->file['name'], $name, $this->file['disk']);
+            $url = str_replace($this->file['name'], $name, $this->file['url']);
+            $path = str_replace($this->file['name'], $name, $this->file['path']);
+            if (file_exists($disk)) {
+                $this->file['cache'][$key] = [
+                    'disk' => $disk,
+                    'url' => $url,
+                    'path' => $path,
                 ];
             }
         }
@@ -144,7 +167,7 @@ class ImageManager
      */
     public function pipes(): ImageManager
     {
-        foreach($this->config->getPipes() as $className){
+        foreach ($this->config->getPipes() as $className) {
             $class = new $className;
             call_user_func($class, $this->file);
         }
