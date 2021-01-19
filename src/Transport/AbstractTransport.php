@@ -7,6 +7,17 @@ namespace GarbuzIvan\ImageManager\Transport;
 abstract class AbstractTransport
 {
     /**
+     * @var array|null
+     */
+    protected $image = null;
+
+    /**
+     * @param string $hash
+     * @return bool
+     */
+    abstract public function existsHash(string $hash): bool;
+
+    /**
      * Search image by hash
      *
      * @param string $hash

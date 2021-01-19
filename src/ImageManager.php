@@ -58,6 +58,10 @@ class ImageManager
         return $this;
     }
 
+    /**
+     * @param string $file
+     * @return $this
+     */
     public function loadFile(string $file): ImageManager
     {
         try {
@@ -68,6 +72,10 @@ class ImageManager
         return $this;
     }
 
+    /**
+     * @param string $base64
+     * @return $this
+     */
     public function loadBase64(string $base64): ImageManager
     {
         try {
@@ -122,6 +130,9 @@ class ImageManager
         return $this;
     }
 
+    /**
+     * @return $this
+     */
     public function saveResize(): ImageManager
     {
         foreach ($this->config->getImageSize() as $size) {
