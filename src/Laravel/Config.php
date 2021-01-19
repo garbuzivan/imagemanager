@@ -8,7 +8,7 @@ use GarbuzIvan\ImageManager\Configuration;
 
 class Config extends Configuration
 {
-    protected $configFile = 'mediaimage';
+    protected $configFile = 'imagemanager';
     /**
      * @var Configuration $config
      */
