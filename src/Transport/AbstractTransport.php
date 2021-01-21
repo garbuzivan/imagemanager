@@ -4,12 +4,28 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager\Transport;
 
+use GarbuzIvan\ImageManager\Configuration;
+
 abstract class AbstractTransport
 {
+    /**
+     * @var Configuration $config
+     */
+    protected $config;
+
     /**
      * @var array|null
      */
     protected $image = null;
+
+    /**
+     * AbstractTransport constructor.
+     * @param $config
+     */
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }
 
     /**
      * @param string $hash
@@ -28,10 +44,10 @@ abstract class AbstractTransport
     /**
      * Search image by id
      *
-     * @param int $hash
+     * @param int $id
      * @return array
      */
-    abstract public function getByID(int $hash): array;
+    abstract public function getByID(int $id): ?array;
 
     /**
      * Search image by filesize (bytes)
@@ -39,7 +55,7 @@ abstract class AbstractTransport
      * @param int $bytes - bytes
      * @return array
      */
-    abstract public function getBySize(int $bytes): array;
+    abstract public function getBySize(int $bytes, int $limit, int $page): array;
 
     /**
      * Search for an image by a range of width and height
@@ -50,7 +66,7 @@ abstract class AbstractTransport
      * @param int $maxHeight
      * @return array
      */
-    abstract public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight): array;
+    abstract public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight, int $limit, int $page): array;
 
     /**
      * Save image to DB

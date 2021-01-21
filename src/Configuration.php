@@ -87,6 +87,13 @@ class Configuration
     protected $transport = DefaultTransport::class;
 
     /**
+     * transport class instance
+     *
+     * @var null
+     */
+    protected $transportObject = null;
+
+    /**
      * @param $url
      */
     public function setPathUrl(string $url): void
@@ -258,10 +265,16 @@ class Configuration
     /**
      * Return transport class instance
      *
+     * @param bool $newObject - true = create new class instance
      * @return bool
      */
-    public function transport(): bool
+    public function transport(bool $newObject = false): bool
     {
+        // return old class instance
+        if(!is_null($this->transportObject) && !$newObject){
+            return $this->transportObject;
+        }
+        // new class instance
         if (class_exists($this->transport)) {
             $class = new $this->transport;
         } else {

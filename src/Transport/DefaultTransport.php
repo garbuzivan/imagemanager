@@ -9,7 +9,7 @@ class DefaultTransport extends AbstractTransport
 {
     public function existsHash(string $hash): bool
     {
-        // TODO: Implement existsHash() method.
+        return false;
     }
 
     public function getByHash(string $hash): ?array
@@ -17,23 +17,23 @@ class DefaultTransport extends AbstractTransport
         return null;
     }
 
-    public function getByID(int $hash): array
+    public function getByID(int $id): ?array
     {
-        // TODO: Implement getByID() method.
+        return [];
     }
 
-    public function getBySize(int $bytes): array
+    public function getBySize(int $bytes, int $limit, int $page): array
     {
-        // TODO: Implement getBySize() method.
+        return [];
     }
 
-    public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight): array
+    public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight, int $limit, int $page): array
     {
-        // TODO: Implement getRange() method.
+        return [];
     }
 
     public function save(array $image): int
     {
-        // TODO: Implement save() method.
+        return 0;
     }
 }

@@ -53,8 +53,7 @@ class ImageManager
     }
 
     /**
-     * Set hash file
-     *
+     * Primary image processing after loading
      */
     public function afterLoad(): void
     {
@@ -161,9 +160,9 @@ class ImageManager
     public function saveResize(): ImageManager
     {
         // drop old cache image
-        if(isset($this->file['cache']) && is_array($this->file['cache'])) {
+        if (isset($this->file['cache']) && is_array($this->file['cache'])) {
             foreach ($this->file['cache'] as $image) {
-                if(file_exists($image['disk'])){
+                if (file_exists($image['disk'])) {
                     unlink($image['disk']);
                 }
             }
