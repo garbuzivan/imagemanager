@@ -123,7 +123,7 @@ class EloquentTransport extends AbstractTransport
 
     public function updateResize(array $image): void
     {
-        if ($image['id'] > 0) {
+        if (isset($image['id']) && $image['id'] > 0) {
             $cache = $this->getImageCacheFromDb($image);
             if (!is_null($cache)) {
                 $cache = json_encode($cache);
