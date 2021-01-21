@@ -150,6 +150,8 @@ class ImageManager
                     'cache' => [],
                 ];
             }
+            // save image cache size
+            $this->saveResize();
             // trasport save
             $this->file['id'] = $this->config->transport()->save($this->file);
         }
@@ -161,41 +163,46 @@ class ImageManager
      */
     public function saveResize(): ImageManager
     {
-        // drop old cache image
-        if (isset($this->file['cache']) && is_array($this->file['cache'])) {
-            foreach ($this->file['cache'] as $image) {
-                if (file_exists($image['disk'])) {
-                    unlink($image['disk']);
+        if (!$this->isError() && !is_null($this->file)) {
+            // drop old cache image
+            if (isset($this->file['cache']) && is_array($this->file['cache'])) {
+                foreach ($this->file['cache'] as $image) {
+                    if (file_exists($image['disk'])) {
+                        unlink($image['disk']);
+                    }
                 }
             }
-        }
-        // create cache image
-        foreach ($this->config->getImageSize() as $size) {
-            $width = $size[0] > 0 ? intval($size[0]) : null;
-            $height = $size[1] > 0 ? intval($size[1]) : null;
-            $key = $width . 'x' . $height;
-            $name = $key . '-' . $this->file['name'];
-            $disk = str_replace($this->file['name'], $name, $this->file['disk']);
-            $url = str_replace($this->file['name'], $name, $this->file['url']);
-            $path = str_replace($this->file['name'], $name, $this->file['path']);
-            (new Intervention())->make($this->file['disk'])
-                ->fit($width, $height)
-                ->save($disk);
-            if (file_exists($disk)) {
-                $this->file['cache'][$key] = [
-                    'disk' => $disk,
-                    'url' => $url,
-                    'path' => $path,
-                ];
+            // create cache image
+            foreach ($this->config->getImageSize() as $size) {
+                $width = $size[0] > 0 ? intval($size[0]) : null;
+                $height = $size[1] > 0 ? intval($size[1]) : null;
+                $key = $width . 'x' . $height;
+                $name = $key . '-' . $this->file['name'];
+                $disk = str_replace($this->file['name'], $name, $this->file['disk']);
+                $url = str_replace($this->file['name'], $name, $this->file['url']);
+                $path = str_replace($this->file['name'], $name, $this->file['path']);
+                (new Intervention())->make($this->file['disk'])
+                    ->fit($width, $height)
+                    ->save($disk);
+                if (file_exists($disk)) {
+                    $this->file['cache'][$key] = [
+                        'disk' => $disk,
+                        'url' => $url,
+                        'path' => $path,
+                    ];
+                }
             }
+            // Update cache size image info in db
+            $this->config->transport()->updateResize($this->file);
+
         }
         return $this;
     }
 
     /**
-     * @return array|false|null
+     * @return array|null
      */
-    public function getImage()
+    public function getImage(): ?array
     {
         if (!$this->isError() && !is_null($this->file)) {
             $size = filesize($this->file['disk']);
@@ -206,7 +213,7 @@ class ImageManager
             $this->file['size'] = $size;
             return $this->file;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -249,5 +256,17 @@ class ImageManager
         $name = mb_strlen($name) == 0 ? $hash : $name;
         $name = str_ireplace($extension, '', $name) . $extension;
         return $name;
+    }
+
+    public function getByHash(string $hash): ImageManager
+    {
+        $this->file = $this->config->transport()->getByHash($hash);
+        return $this;
+    }
+
+    public function getByID(int $id): ImageManager
+    {
+        $this->file = $this->config->transport()->getByID($id);
+        return $this;
     }
 }

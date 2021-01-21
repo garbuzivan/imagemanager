@@ -80,4 +80,12 @@ abstract class AbstractTransport
      * @return int - ID image
      */
     abstract public function save(array $image): int;
+
+    /**
+     * Update cache size image info in db
+     *
+     * @param array $image
+     * @return void
+     */
+    abstract public function updateResize(array $image): void;
 }

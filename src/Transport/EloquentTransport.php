@@ -20,22 +20,22 @@ class EloquentTransport extends AbstractTransport
 
     public function getByHash(string $hash): ?array
     {
-        try {
-            $image = Images::where('hash', $hash)->firstOrFail();
-        } catch (ErrorException $e) {
+        $image = Images::where('hash', $hash)->first();
+        if (is_null($image)) {
             return null;
+        } else {
+            return $this->imageToArray($image);
         }
-        return $this->imageToArray($image);
     }
 
     public function getByID(int $id): ?array
     {
-        try {
-            $image = Images::where('id', $id)->firstOrFail();
-        } catch (ErrorException $e) {
-            return [];
+        $image = Images::where('id', $id)->first();
+        if (is_null($image)) {
+            return null;
+        } else {
+            return $this->imageToArray($image);
         }
-        return $this->imageToArray($image);
     }
 
     public function getBySize(int $minBytes, int $maxBytes, int $limit, int $page): array
@@ -64,7 +64,6 @@ class EloquentTransport extends AbstractTransport
         } elseif (!isset($image['name']) || is_null($image['name'])) {
             return 0;
         }
-
         $insert = [
             'hash' => $image['hash'],
             'title' => $image['title'] ?? null,
@@ -75,14 +74,12 @@ class EloquentTransport extends AbstractTransport
             'type' => $image['type'] ?? null,
             'size' => $image['size'] ?? null,
         ];
-        $cache = [];
-        if (isset($image['cache']) && is_array($image['cache'])) {
-            foreach ($image['cache'] as $keyImg => $img) {
-                $cache[$keyImg] = $img['path'];
-            }
+        $cache = $this->getImageCacheFromDb($image);
+        if (!is_null($cache)) {
+            $cache = json_encode($cache);
         }
-        $insert['cache'] = json_encode($cache);
-        return Images::create($cache)->id;
+        $insert['cache'] = $cache;
+        return Images::create($insert)->id;
     }
 
     /**
@@ -94,25 +91,56 @@ class EloquentTransport extends AbstractTransport
     public function imageToArray($image): array
     {
         $object = [
+            'id' => $image->id,
             'hash' => $image->hash,
             'title' => $image->title,
             'name' => $image->name,
             'path' => $image->path,
-            'cache' => $image->cache,
+            'cache' => [],
         ];
         $object['disk'] = $this->config->getPathDisk() . $image->path;
         $object['disk'] = (str_replace('//', '/', $object['disk']));
         $object['url'] = $this->config->getPathUrl() . $image->path;
-        $cache = json_decode($image->cache, true);
-        if (is_array($cache)) {
-            foreach ($cache as $keyImg => $img) {
-                $imgCache['path'] = $img['path'];
-                $imgCache['disk'] = $this->config->getPathDisk() . $img['path'];
-                $imgCache['disk'] = (str_replace('//', '/', $imgCache['disk']));;
-                $imgCache['url'] = $this->config->getPathUrl() . $img['path'];
-                $object['cache'][$keyImg] = $imgCache;
+        if (!is_null($image->cache)) {
+            $cache = json_decode($image->cache, true);
+            if (is_array($cache)) {
+                foreach ($cache as $keyImg => $img) {
+                    if (isset($img['path']) && !is_null($img['path'])) {
+                        $imgCache = [];
+                        $imgCache['path'] = $img['path'];
+                        $imgCache['disk'] = $this->config->getPathDisk() . $img['path'];
+                        $imgCache['disk'] = (str_replace('//', '/', $imgCache['disk']));
+                        $imgCache['url'] = $this->config->getPathUrl() . $img['path'];
+                        if (file_exists($imgCache['disk'])) {
+                            $object['cache'][$keyImg] = $imgCache;
+                        }
+                    }
+                }
             }
         }
         return $object;
+    }
+
+    public function updateResize(array $image): void
+    {
+        if ($image['id'] > 0) {
+            $cache = $this->getImageCacheFromDb($image);
+            if (!is_null($cache)) {
+                $cache = json_encode($cache);
+            }
+            $update['cache'] = $cache;
+            Images::where('id', $image['id'])->update($update);
+        }
+    }
+
+    public function getImageCacheFromDb(array $image): ?array
+    {
+        $images = null;
+        if (isset($image['cache']) && is_array($image['cache'])) {
+            foreach ($image['cache'] as $keyImg => $img) {
+                $images[$keyImg]['path'] = $img['path'];
+            }
+        }
+        return $images;
     }
 }

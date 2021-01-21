@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager;
 
+use GarbuzIvan\ImageManager\Transport\AbstractTransport;
 use GarbuzIvan\ImageManager\Transport\DefaultTransport;
 
 class Configuration
@@ -266,9 +267,9 @@ class Configuration
      * Return transport class instance
      *
      * @param bool $newObject - true = create new class instance
-     * @return bool
+     * @return AbstractTransport
      */
-    public function transport(bool $newObject = false): bool
+    public function transport(bool $newObject = false): AbstractTransport
     {
         // return old class instance
         if(!is_null($this->transportObject) && !$newObject){
@@ -276,10 +277,10 @@ class Configuration
         }
         // new class instance
         if (class_exists($this->transport)) {
-            $class = new $this->transport;
+            $this->transportObject = new $this->transport($this);
         } else {
-            $class = new DefaultTransport;
+            $this->transportObject = new DefaultTransport($this);
         }
-        return $class;
+        return $this->transportObject;
     }
 }
