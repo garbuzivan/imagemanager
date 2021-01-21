@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace GarbuzIvan\ImageManager\Transport;
 
 
-class EloquentTransport extends AbstractTransport
+class DefaultTransport extends AbstractTransport
 {
     public function existsHash(string $hash): bool
     {

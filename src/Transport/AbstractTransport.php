@@ -23,7 +23,7 @@ abstract class AbstractTransport
      * @param string $hash
      * @return array
      */
-    abstract public function getByHash(string $hash): array;
+    abstract public function getByHash(string $hash): ?array;
 
     /**
      * Search image by id

@@ -7,6 +7,7 @@ namespace GarbuzIvan\ImageManager;
 use GarbuzIvan\ImageManager\Exceptions\FilterValidateUrlException;
 use GarbuzIvan\ImageManager\Exceptions\MimeTypeNotAvailableException;
 use GarbuzIvan\ImageManager\Exceptions\UrlNotLoadException;
+use Intervention\Image\ImageManager as Intervention;
 
 class ImageManager
 {
@@ -21,6 +22,13 @@ class ImageManager
      * @var array $file
      */
     protected $file = null;
+
+    /**
+     * File hash
+     *
+     * @var null
+     */
+    protected $hash = null;
 
     /**
      * @var array|null $error
@@ -45,6 +53,20 @@ class ImageManager
     }
 
     /**
+     * Set hash file
+     *
+     */
+    public function afterLoad(): void
+    {
+        if (!$this->isError()) {
+            $this->hash = (new Hash)->getHashString($this->object);
+            $this->file = $this->config->transport()->getByHash($this->hash);
+        } else {
+            $this->hash = null;
+        }
+    }
+
+    /**
      * @param string $url
      * @return $this
      */
@@ -55,6 +77,7 @@ class ImageManager
         } catch (FilterValidateUrlException | MimeTypeNotAvailableException | UrlNotLoadException | \Exception $e) {
             $this->error = ['error' => $e->getMessage()];
         }
+        $this->afterLoad();
         return $this;
     }
 
@@ -69,6 +92,7 @@ class ImageManager
         } catch (\Exception $e) {
             $this->error = ['error' => $e->getMessage()];
         }
+        $this->afterLoad();
         return $this;
     }
 
@@ -83,6 +107,7 @@ class ImageManager
         } catch (\Exception $e) {
             $this->error = ['error' => $e->getMessage()];
         }
+        $this->afterLoad();
         return $this;
     }
 
@@ -94,7 +119,7 @@ class ImageManager
      */
     public function save(string $name = null, string $path = null, string $title = null): ImageManager
     {
-        if (!$this->isError()) {
+        if ($this->file == null && !$this->isError()) {
             // args
             $extension = '.' . (new File)->getExtensionFromString($this->object, $this->config->getMimeTypes());
             $hash = (new Hash)->getHashString($this->object);
@@ -135,15 +160,26 @@ class ImageManager
      */
     public function saveResize(): ImageManager
     {
+        // drop old cache image
+        if(isset($this->file['cache']) && is_array($this->file['cache'])) {
+            foreach ($this->file['cache'] as $image) {
+                if(file_exists($image['disk'])){
+                    unlink($image['disk']);
+                }
+            }
+        }
+        // create cache image
         foreach ($this->config->getImageSize() as $size) {
             $width = $size[0] > 0 ? intval($size[0]) : null;
             $height = $size[1] > 0 ? intval($size[1]) : null;
             $key = $width . 'x' . $height;
             $name = $key . '-' . $this->file['name'];
-            Image(array('driver' => 'imagick'))::make($this->file['disk'])->resize($width, $height)->save($name);
             $disk = str_replace($this->file['name'], $name, $this->file['disk']);
             $url = str_replace($this->file['name'], $name, $this->file['url']);
             $path = str_replace($this->file['name'], $name, $this->file['path']);
+            (new Intervention())->make($this->file['disk'])
+                ->fit($width, $height)
+                ->save($disk);
             if (file_exists($disk)) {
                 $this->file['cache'][$key] = [
                     'disk' => $disk,

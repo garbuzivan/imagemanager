@@ -11,12 +11,12 @@ class ImageUse extends Model
 {
     use HasFactory;
 
-    protected string $table = 'image_manager_use';
+    protected $table = 'image_manager_use';
 
     /**
      * @var array<string> $fillable
      */
-    protected array $fillable = [
+    protected $fillable = [
         'image_id',
         'item_id',
         'component',

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager;
 
+use GarbuzIvan\ImageManager\Transport\DefaultTransport;
+
 class Configuration
 {
     /**
@@ -76,6 +78,13 @@ class Configuration
      * @var string
      */
     protected $pipesMethod = 'handle';
+
+    /**
+     * Class transport
+     *
+     * @var string
+     */
+    protected $transport = DefaultTransport::class;
 
     /**
      * @param $url
@@ -235,5 +244,29 @@ class Configuration
     public function getHash(): bool
     {
         return $this->hash;
+    }
+
+    /**
+     * Set transport class
+     * @param string $transport
+     */
+    public function setTransport(string $transport): void
+    {
+        $this->transport = $transport;
+    }
+
+    /**
+     * Return transport class instance
+     *
+     * @return bool
+     */
+    public function transport(): bool
+    {
+        if (class_exists($this->transport)) {
+            $class = new $this->transport;
+        } else {
+            $class = new DefaultTransport;
+        }
+        return $class;
     }
 }

@@ -11,12 +11,12 @@ class Images extends Model
 {
     use HasFactory;
 
-    protected string $table = 'image_manager';
+    protected $table = 'image_manager';
 
     /**
      * @var array<string> $fillable
      */
-    protected array $fillable = [
+    protected $fillable = [
         'hash',
         'name',
         'path',

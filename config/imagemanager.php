@@ -28,7 +28,9 @@ return [
     ],
 
     'pipes' => [
-        GarbuzIvan\ImageManager\Pipes\Optimizer::class,
+        \GarbuzIvan\ImageManager\Pipes\Optimizer::class,
     ],
+
+    'transport' => \GarbuzIvan\ImageManager\Transport\EloquentTransport::class,
 
 ];

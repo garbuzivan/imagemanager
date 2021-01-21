@@ -51,6 +51,7 @@ class Config extends Configuration
         if(is_array($pipes)){
             $this->setPipes($pipes);
         }
+        $this->setTransport(config($this->configFile . '.transport'));
         return $this;
     }
 }
