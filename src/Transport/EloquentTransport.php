@@ -54,7 +54,35 @@ class EloquentTransport extends AbstractTransport
 
     public function save(array $image): int
     {
-        // TODO: Implement save() method.
+        // is not hash
+        if (!isset($image['hash']) || is_null($image['hash'])) {
+            return 0;
+            // is not path
+        } elseif (!isset($image['path']) || is_null($image['path'])) {
+            return 0;
+            // is not name
+        } elseif (!isset($image['name']) || is_null($image['name'])) {
+            return 0;
+        }
+
+        $insert = [
+            'hash' => $image['hash'],
+            'title' => $image['title'] ?? null,
+            'name' => $image['name'],
+            'path' => $image['path'],
+            'width' => $image['width'] ?? null,
+            'height' => $image['height'] ?? null,
+            'type' => $image['type'] ?? null,
+            'size' => $image['size'] ?? null,
+        ];
+        $cache = [];
+        if (isset($image['cache']) && is_array($image['cache'])) {
+            foreach ($image['cache'] as $keyImg => $img) {
+                $cache[$keyImg] = $img['path'];
+            }
+        }
+        $insert['cache'] = json_encode($cache);
+        return Images::create($cache)->id;
     }
 
     /**
@@ -75,6 +103,16 @@ class EloquentTransport extends AbstractTransport
         $object['disk'] = $this->config->getPathDisk() . $image->path;
         $object['disk'] = (str_replace('//', '/', $object['disk']));
         $object['url'] = $this->config->getPathUrl() . $image->path;
+        $cache = json_decode($image->cache, true);
+        if (is_array($cache)) {
+            foreach ($cache as $keyImg => $img) {
+                $imgCache['path'] = $img['path'];
+                $imgCache['disk'] = $this->config->getPathDisk() . $img['path'];
+                $imgCache['disk'] = (str_replace('//', '/', $imgCache['disk']));;
+                $imgCache['url'] = $this->config->getPathUrl() . $img['path'];
+                $object['cache'][$keyImg] = $imgCache;
+            }
+        }
         return $object;
     }
 }

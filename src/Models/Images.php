@@ -34,7 +34,7 @@ class Images extends Model
     }
 
     /**
-     * Apply the scope to a given Eloquent query builder.
+     * Get image by range size
      *
      * @param $query
      * @param int $minBytes

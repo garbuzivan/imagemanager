@@ -150,6 +150,8 @@ class ImageManager
                     'cache' => [],
                 ];
             }
+            // trasport save
+            $this->file['id'] = $this->config->transport()->save($this->file);
         }
         return $this;
     }
