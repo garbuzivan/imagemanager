@@ -38,16 +38,17 @@ class EloquentTransport extends AbstractTransport
         }
     }
 
-    public function getBySize(int $minBytes, int $maxBytes, int $limit, int $page): array
+    public function getBySize(int $minBytes = 1, int $maxBytes = 1000000000, int $limit = 10, int $page = 1): array
     {
         try {
-            $images = Images::rangeSize()->get();
+            $images = Images::size($minBytes, $maxBytes)->get();
+            dd($images);
         } catch (ErrorException $e) {
             return [];
         }
     }
 
-    public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight, int $limit, int $page): array
+    public function getRange(int $minWidth = 1, int $maxWidth = 10000, int $minHeight = 1, int $maxHeight = 10000, int $limit = 10, int $page = 1): array
     {
         // TODO: Implement getRange() method.
     }

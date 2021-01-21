@@ -41,8 +41,8 @@ class Images extends Model
      * @param int $maxBytes
      * @return Builder
      */
-    public function scopeRangeSize($query, int $minBytes, int $maxBytes)
+    public function scopeSize($query, int $minBytes, int $maxBytes)
     {
-        return $query->where('size', '>=', $minBytes)->where('size', '<=', $maxBytes);
+        return $query->where('size', '>=', $minBytes); //->where('size', '<=', $maxBytes);
     }
 }

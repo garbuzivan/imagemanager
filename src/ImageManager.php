@@ -193,7 +193,7 @@ class ImageManager
                 }
             }
             // Update cache size image info in db
-            $this->config->transport()->updateResize($this->file);
+            $this->config->transport()->updateResize($this->getImage());
 
         }
         return $this;
@@ -268,5 +268,15 @@ class ImageManager
     {
         $this->file = $this->config->transport()->getByID($id);
         return $this;
+    }
+
+    public function getBySize(int $minBytes = 1, int $maxBytes = 100000000, int $limit = 10, int $page = 1): array
+    {
+        return $this->config->transport()->getBySize($minBytes, $maxBytes, $limit, $page);
+    }
+
+    public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight, int $limit = 10, int $page = 1): array
+    {
+        return $this->config->transport()->getRange($minWidth, $maxWidth, $minHeight, $maxHeight, $limit, $page);
     }
 }
