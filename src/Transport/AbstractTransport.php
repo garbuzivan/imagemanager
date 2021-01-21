@@ -52,10 +52,13 @@ abstract class AbstractTransport
     /**
      * Search image by filesize (bytes)
      *
-     * @param int $bytes - bytes
+     * @param int $minBytes
+     * @param int $maxBytes
+     * @param int $limit
+     * @param int $page
      * @return array
      */
-    abstract public function getBySize(int $bytes, int $limit, int $page): array;
+    abstract public function getBySize(int $minBytes, int $maxBytes, int $limit, int $page): array;
 
     /**
      * Search for an image by a range of width and height
@@ -64,6 +67,8 @@ abstract class AbstractTransport
      * @param int $maxWidth
      * @param int $minHeight
      * @param int $maxHeight
+     * @param int $limit
+     * @param int $page
      * @return array
      */
     abstract public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight, int $limit, int $page): array;

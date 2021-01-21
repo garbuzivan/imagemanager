@@ -22,7 +22,7 @@ class DefaultTransport extends AbstractTransport
         return [];
     }
 
-    public function getBySize(int $bytes, int $limit, int $page): array
+    public function getBySize(int $minBytes, int $maxBytes, int $limit, int $page): array
     {
         return [];
     }

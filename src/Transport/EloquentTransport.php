@@ -38,10 +38,10 @@ class EloquentTransport extends AbstractTransport
         return $this->imageToArray($image);
     }
 
-    public function getBySize(int $bytes, int $limit, int $page): array
+    public function getBySize(int $minBytes, int $maxBytes, int $limit, int $page): array
     {
         try {
-            $images = Images::where('id', $id)->get();
+            $images = Images::rangeSize()->get();
         } catch (ErrorException $e) {
             return [];
         }
