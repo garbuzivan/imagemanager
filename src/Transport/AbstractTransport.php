@@ -87,5 +87,5 @@ abstract class AbstractTransport
      * @param array $image
      * @return void
      */
-    abstract public function updateResize(array $image): void;
+    abstract public function update(array $image): void;
 }

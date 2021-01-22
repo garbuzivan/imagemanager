@@ -30,11 +30,10 @@
 `$image->loadFile($_FILES["fileToUpload"]["tmp_name"]);`
 
 ### Загрузка ищображения из строки base64
-`$image->loadBase64('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAAB3RJTUUH1ggDCwMADQ4NnwAAAFVJREFUGJWNkMEJADEIBEcbSDkXUnfSgnBVeZ8LSAjiwjyEQXSFEIcHGP9oAi+H0Bymgx9MhxbFdZE2a0s9kTZdw01ZhhYkABSwgmf1Z6r1SNyfFf4BZ+ZUExcNUQUAAAAASUVORK5CYII=')
-             ->save()->pipes();`
+`$image->loadBase64('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAAB3RJTUUH1ggDCwMADQ4NnwAAAFVJREFUGJWNkMEJADEIBEcbSDkXUnfSgnBVeZ8LSAjiwjyEQXSFEIcHGP9oAi+H0Bymgx9MhxbFdZE2a0s9kTZdw01ZhhYkABSwgmf1Z6r1SNyfFf4BZ+ZUExcNUQUAAAAASUVORK5CYII=');`
 
-### Сохранение загруженного файла и постобработка Pipes из конфига
-`$image->save()->pipes();`
+### Сохранение загруженного файла
+`$image->save();`
 
 ### Поиск изображения по ID
 `$image->getByID(1)->getImage();`

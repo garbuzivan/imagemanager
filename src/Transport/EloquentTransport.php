@@ -122,14 +122,23 @@ class EloquentTransport extends AbstractTransport
         return $object;
     }
 
-    public function updateResize(array $image): void
+    public function update(array $image): void
     {
         if (isset($image['id']) && $image['id'] > 0) {
+            $update = [
+                'width' => $image['width'] ?? null,
+                'height' => $image['height'] ?? null,
+                'type' => $image['type'] ?? null,
+                'size' => $image['size'] ?? null,
+            ];
             $cache = $this->getImageCacheFromDb($image);
             if (!is_null($cache)) {
                 $cache = json_encode($cache);
             }
             $update['cache'] = $cache;
+            if (!isset($image['title'])) {
+                $update['title'] = $image['title'];
+            }
             Images::where('id', $image['id'])->update($update);
         }
     }

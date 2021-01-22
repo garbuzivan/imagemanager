@@ -150,6 +150,8 @@ class ImageManager
                     'cache' => [],
                 ];
             }
+            // Start Pipes
+            $this->pipes();
             // save image cache size
             $this->saveResize();
             // trasport save
@@ -163,7 +165,7 @@ class ImageManager
      */
     public function saveResize(): ImageManager
     {
-        if (!$this->isError() && !is_null($this->file)) {
+        if ($this->isLoadImage()) {
             // drop old cache image
             if (isset($this->file['cache']) && is_array($this->file['cache'])) {
                 foreach ($this->file['cache'] as $image) {
@@ -193,8 +195,20 @@ class ImageManager
                 }
             }
             // Update cache size image info in db
-            $this->config->transport()->updateResize($this->getImage());
+            $this->config->transport()->update($this->getImage());
 
+        }
+        return $this;
+    }
+
+
+    /**
+     * @return $this
+     */
+    public function update(): ImageManager
+    {
+        if ($this->isLoadImage()) {
+            $this->config->transport()->update($this->getImage());
         }
         return $this;
     }
@@ -204,7 +218,7 @@ class ImageManager
      */
     public function getImage(): ?array
     {
-        if (!$this->isError() && !is_null($this->file)) {
+        if ($this->isLoadImage()) {
             $size = filesize($this->file['disk']);
             $imageInfo = getimagesize($this->file['disk']);
             $this->file['width'] = $imageInfo[0];
@@ -256,6 +270,16 @@ class ImageManager
         $name = mb_strlen($name) == 0 ? $hash : $name;
         $name = str_ireplace($extension, '', $name) . $extension;
         return $name;
+    }
+
+    /**
+     * Test load image
+     *
+     * @return bool
+     */
+    public function isLoadImage(): bool
+    {
+        return !$this->isError() && !is_null($this->file);
     }
 
     public function getByHash(string $hash): ImageManager

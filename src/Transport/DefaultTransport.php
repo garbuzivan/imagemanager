@@ -37,7 +37,7 @@ class DefaultTransport extends AbstractTransport
         return 0;
     }
 
-    public function updateResize(array $image): void
+    public function update(array $image): void
     {
         // TODO: Implement updateResize() method.
     }
