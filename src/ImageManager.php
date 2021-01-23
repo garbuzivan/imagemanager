@@ -111,12 +111,12 @@ class ImageManager
     }
 
     /**
+     * @param string|null $title
      * @param string|null $name
      * @param string|null $path
-     * @param string|null $title
      * @return $this
      */
-    public function save(string $name = null, string $path = null, string $title = null): ImageManager
+    public function save(string $title = null, string $name = null, string $path = null): ImageManager
     {
         if ($this->file == null && !$this->isError()) {
             // args
