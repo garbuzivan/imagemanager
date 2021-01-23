@@ -74,6 +74,16 @@ abstract class AbstractTransport
     abstract public function getRange(int $minWidth, int $maxWidth, int $minHeight, int $maxHeight, int $limit, int $page): array;
 
     /**
+     * Search for an image by a title
+     *
+     * @param int $title
+     * @param int $limit
+     * @param int $page
+     * @return array
+     */
+    abstract public function getTitle(int $title, int $limit, int $page): array;
+
+    /**
      * Save image to DB
      *
      * @param array $image

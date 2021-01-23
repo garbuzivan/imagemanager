@@ -42,7 +42,7 @@ class EloquentTransport extends AbstractTransport
     public function getBySize(int $minBytes = null, int $maxBytes = null, int $limit = 10, int $page = 1): array
     {
         try {
-            $images = Images::rangeFileSize($minBytes, $maxBytes)->limit($limit)->offset($limit*$page-$limit)->get();
+            $images = Images::rangeFileSize($minBytes, $maxBytes)->limit($limit)->offset($limit * $page - $limit)->get();
         } catch (ErrorException $e) {
             return [];
         }
@@ -52,7 +52,17 @@ class EloquentTransport extends AbstractTransport
     public function getRange(int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null, int $limit = 10, int $page = 1): array
     {
         try {
-            $images = Images::rangeSize($minWidth, $maxWidth, $minHeight, $maxHeight, $limit, $page)->limit($limit)->offset($limit*$page-$limit)->get();
+            $images = Images::rangeSize($minWidth, $maxWidth, $minHeight, $maxHeight)->limit($limit)->offset($limit * $page - $limit)->get();
+        } catch (ErrorException $e) {
+            return [];
+        }
+        return $this->resultListToArray($images);
+    }
+
+    public function getTitle(int $title = null, int $limit = 10, int $page = 1): array
+    {
+        try {
+            $images = Images::title($title)->limit($limit)->offset($limit * $page - $limit)->get();
         } catch (ErrorException $e) {
             return [];
         }

@@ -43,10 +43,10 @@ class Images extends Model
      */
     public function scopeRangeFileSize($query, int $minBytes = null, int $maxBytes = null)
     {
-        if(!is_null($minBytes)){
+        if (!is_null($minBytes)) {
             $query->where('size', '>=', $minBytes);
         }
-        if(!is_null($maxBytes)){
+        if (!is_null($maxBytes)) {
             $query->where('size', '<=', $maxBytes);
         }
         return $query;
@@ -64,17 +64,25 @@ class Images extends Model
      */
     public function scopeRangeSize($query, int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null)
     {
-        if(!is_null($minWidth)){
+        if (!is_null($minWidth)) {
             $query->where('width', '>=', $minWidth);
         }
-        if(!is_null($maxWidth)){
+        if (!is_null($maxWidth)) {
             $query->where('width', '<=', $maxWidth);
         }
-        if(!is_null($minHeight)){
+        if (!is_null($minHeight)) {
             $query->where('height', '>=', $minHeight);
         }
-        if(!is_null($maxHeight)){
+        if (!is_null($maxHeight)) {
             $query->where('height', '<=', $maxHeight);
+        }
+        return $query;
+    }
+
+    public function scopeTitle($query, int $title = null)
+    {
+        if (!is_null($title)) {
+            $query->where('title', 'LIKE', '%' . $title . '%');
         }
         return $query;
     }

@@ -41,4 +41,9 @@ class DefaultTransport extends AbstractTransport
     {
         // TODO: Implement updateResize() method.
     }
+
+    public function getTitle(int $title, int $limit, int $page): array
+    {
+        return [];
+    }
 }
