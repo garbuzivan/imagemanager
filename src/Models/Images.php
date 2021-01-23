@@ -34,15 +34,48 @@ class Images extends Model
     }
 
     /**
+     * Get image by range filesize
+     *
+     * @param $query
+     * @param int|null $minBytes
+     * @param int|null $maxBytes
+     * @return Builder
+     */
+    public function scopeRangeFileSize($query, int $minBytes = null, int $maxBytes = null)
+    {
+        if(!is_null($minBytes)){
+            $query->where('size', '>=', $minBytes);
+        }
+        if(!is_null($maxBytes)){
+            $query->where('size', '<=', $maxBytes);
+        }
+        return $query;
+    }
+
+    /**
      * Get image by range size
      *
      * @param $query
-     * @param int $minBytes
-     * @param int $maxBytes
+     * @param int|null $minWidth
+     * @param int|null $maxWidth
+     * @param int|null $minHeight
+     * @param int|null $maxHeight
      * @return Builder
      */
-    public function scopeSize($query, int $minBytes, int $maxBytes)
+    public function scopeRangeSize($query, int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null)
     {
-        return $query->where('size', '>=', $minBytes); //->where('size', '<=', $maxBytes);
+        if(!is_null($minWidth)){
+            $query->where('width', '>=', $minWidth);
+        }
+        if(!is_null($maxWidth)){
+            $query->where('width', '<=', $maxWidth);
+        }
+        if(!is_null($minHeight)){
+            $query->where('height', '>=', $minHeight);
+        }
+        if(!is_null($maxHeight)){
+            $query->where('height', '<=', $maxHeight);
+        }
+        return $query;
     }
 }

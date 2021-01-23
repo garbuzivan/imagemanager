@@ -6,6 +6,7 @@ namespace GarbuzIvan\ImageManager\Transport;
 
 use ErrorException;
 use GarbuzIvan\ImageManager\Models\Images;
+use Illuminate\Database\Eloquent\Collection;
 
 class EloquentTransport extends AbstractTransport
 {
@@ -38,19 +39,24 @@ class EloquentTransport extends AbstractTransport
         }
     }
 
-    public function getBySize(int $minBytes = 1, int $maxBytes = 1000000000, int $limit = 10, int $page = 1): array
+    public function getBySize(int $minBytes = null, int $maxBytes = null, int $limit = 10, int $page = 1): array
     {
         try {
-            $images = Images::size($minBytes, $maxBytes)->get();
-            dd($images);
+            $images = Images::rangeFileSize($minBytes, $maxBytes)->limit($limit)->offset($limit*$page-$limit)->get();
         } catch (ErrorException $e) {
             return [];
         }
+        return $this->resultListToArray($images);
     }
 
-    public function getRange(int $minWidth = 1, int $maxWidth = 10000, int $minHeight = 1, int $maxHeight = 10000, int $limit = 10, int $page = 1): array
+    public function getRange(int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null, int $limit = 10, int $page = 1): array
     {
-        // TODO: Implement getRange() method.
+        try {
+            $images = Images::rangeSize($minWidth, $maxWidth, $minHeight, $maxHeight, $limit, $page)->limit($limit)->offset($limit*$page-$limit)->get();
+        } catch (ErrorException $e) {
+            return [];
+        }
+        return $this->resultListToArray($images);
     }
 
     public function save(array $image): int
@@ -97,6 +103,10 @@ class EloquentTransport extends AbstractTransport
             'title' => $image->title,
             'name' => $image->name,
             'path' => $image->path,
+            'width' => $image->width,
+            'height' => $image->height,
+            'type' => $image->type,
+            'size' => $image->size,
             'cache' => [],
         ];
         $object['disk'] = $this->config->getPathDisk() . $image->path;
@@ -122,6 +132,11 @@ class EloquentTransport extends AbstractTransport
         return $object;
     }
 
+    /**
+     * Update image info in DB
+     *
+     * @param array $image
+     */
     public function update(array $image): void
     {
         if (isset($image['id']) && $image['id'] > 0) {
@@ -143,6 +158,12 @@ class EloquentTransport extends AbstractTransport
         }
     }
 
+    /**
+     * Preparing an array of cached image sizes to store paths in the database
+     *
+     * @param array $image
+     * @return array|null
+     */
     public function getImageCacheFromDb(array $image): ?array
     {
         $images = null;
@@ -150,6 +171,15 @@ class EloquentTransport extends AbstractTransport
             foreach ($image['cache'] as $keyImg => $img) {
                 $images[$keyImg]['path'] = $img['path'];
             }
+        }
+        return $images;
+    }
+
+    public function resultListToArray(Collection $list): array
+    {
+        $images = [];
+        foreach ($list as $image) {
+            $images[$image->id] = $this->imageToArray($image);
         }
         return $images;
     }
