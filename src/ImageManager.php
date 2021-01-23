@@ -359,8 +359,8 @@ class ImageManager
         return $this->config->transport()->getRange($minWidth, $maxWidth, $minHeight, $maxHeight, $limit, $page);
     }
 
-    public function getTitle(int $title = null, int $limit = 10, int $page = 1): array
+    public function getTitle(string $title = null, int $limit = 10, int $page = 1): array
     {
-        return $this->config->transport()->getTitle($minWidth, $maxWidth, $minHeight, $maxHeight, $limit, $page);
+        return $this->config->transport()->getTitle($title, $limit, $page);
     }
 }
