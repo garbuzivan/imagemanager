@@ -56,9 +56,18 @@
 ### Поиск изображения по hash
 <p>Аргументы применяют значения в формате int, если установить null - аргумент не будет учитываться при поиске</p>
 
-`$list = $image->getBySize(int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null, , int $limitItem = 10, int $numberPage = 1);`
+`$list = $image->getBySize(int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null, int $limitItem = 10, int $numberPage = 1);`
 
 <p>Метод возвращает массив изображений соответствующих запросу.</p>
+
+### Поиск изображения по title
+
+<p>Аргумент применяет значения в формате string, если установить null - аргумент не будет учитываться при поиске</p>
+
+`$list = $ImageManager->getTitle('%Тестовое%', int $limitItem = 10, int $numberPage = 1);`
+
+<p>Метод возвращает массив изображений соответствующих запросу.</p>
+
 
 ### Обновление title изображения
 
