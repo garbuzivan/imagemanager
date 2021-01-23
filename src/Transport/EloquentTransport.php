@@ -86,7 +86,7 @@ class EloquentTransport extends AbstractTransport
             $cache = json_encode($cache);
         }
         $insert['cache'] = $cache;
-        return Images::create($insert)->id;
+        return Images::insertGetId($insert);
     }
 
     /**

@@ -155,7 +155,7 @@ class ImageManager
             // save image cache size
             $this->saveResize();
             // trasport save
-            $this->file['id'] = $this->config->transport()->save($this->file);
+            $this->file['id'] = $this->config->transport()->save($this->getImage());
         }
         return $this;
     }
@@ -209,6 +209,26 @@ class ImageManager
     {
         if ($this->isLoadImage()) {
             $this->config->transport()->update($this->getImage());
+        }
+        return $this;
+    }
+
+    /**
+     * Method update info all images from array
+     *
+     * @param array $images example [['id'=>1], ['id'=>11], ['id'=>31]]
+     * @return $this
+     */
+    public function updateArrayByID(array $images): ImageManager
+    {
+        foreach ($images as $image) {
+            if (!isset($image['id'])) {
+                continue;
+            }
+            $this->getByID($image['id']);
+            if ($this->isLoadImage()) {
+                $this->config->transport()->update($this->getImage());
+            }
         }
         return $this;
     }
