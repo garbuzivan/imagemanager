@@ -203,11 +203,14 @@ class ImageManager
 
 
     /**
+     * @param array|null $file
      * @return $this
      */
-    public function update(): ImageManager
+    public function update(array $file = null): ImageManager
     {
-        if ($this->isLoadImage()) {
+        if (is_array($file) && count($file) > 0) {
+            $this->config->transport()->update($file);
+        } elseif ($this->isLoadImage()) {
             $this->config->transport()->update($this->getImage());
         }
         return $this;

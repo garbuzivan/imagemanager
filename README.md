@@ -56,6 +56,11 @@ EloquentTransport - подразумевает использование Larave
 `$list = $image->getBySize(int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null, , int $limitItem = 10, int $numberPage = 1);`
 Метод возвращает массив изображений соответствующих запросу.
 
+### Обновление title изображения
+`$img = $ImageManager->getByID(2)->getImage(); 
+$img['title'] = 'Тестовое ZB изображение';
+$ImageManager->update($img);`
+
 ### Конфигурация пакета
 
 ## Тестирование

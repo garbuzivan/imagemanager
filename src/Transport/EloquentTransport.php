@@ -161,7 +161,7 @@ class EloquentTransport extends AbstractTransport
                 $cache = json_encode($cache);
             }
             $update['cache'] = $cache;
-            if (!isset($image['title'])) {
+            if (isset($image['title'])) {
                 $update['title'] = $image['title'];
             }
             Images::where('id', $image['id'])->update($update);
