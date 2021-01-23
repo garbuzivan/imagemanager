@@ -79,10 +79,10 @@ class Images extends Model
         return $query;
     }
 
-    public function scopeTitle($query, int $title = null)
+    public function scopeTitle($query, string $title = null)
     {
         if (!is_null($title)) {
-            $query->where('title', 'LIKE', '%' . $title . '%');
+            $query->where('title', 'LIKE', $title);
         }
         return $query;
     }
