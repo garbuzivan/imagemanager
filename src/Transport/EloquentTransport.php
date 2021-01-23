@@ -59,7 +59,7 @@ class EloquentTransport extends AbstractTransport
         return $this->resultListToArray($images);
     }
 
-    public function getTitle(int $title = null, int $limit = 10, int $page = 1): array
+    public function getTitle(string $title = null, int $limit = 10, int $page = 1): array
     {
         try {
             $images = Images::title($title)->limit($limit)->offset($limit * $page - $limit)->get();

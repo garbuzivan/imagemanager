@@ -76,12 +76,12 @@ abstract class AbstractTransport
     /**
      * Search for an image by a title
      *
-     * @param int $title
+     * @param string|null $title
      * @param int $limit
      * @param int $page
      * @return array
      */
-    abstract public function getTitle(int $title, int $limit, int $page): array;
+    abstract public function getTitle(string $title, int $limit, int $page): array;
 
     /**
      * Save image to DB
