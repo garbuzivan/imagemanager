@@ -79,6 +79,13 @@ class Images extends Model
         return $query;
     }
 
+    /**
+     * Get image by title
+     *
+     * @param $query
+     * @param string|null $title
+     * @return mixed
+     */
     public function scopeTitle($query, string $title = null)
     {
         if (!is_null($title)) {

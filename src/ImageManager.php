@@ -242,12 +242,19 @@ class ImageManager
     public function getImage(): ?array
     {
         if ($this->isLoadImage()) {
-            $size = filesize($this->file['disk']);
-            $imageInfo = getimagesize($this->file['disk']);
-            $this->file['width'] = $imageInfo[0];
-            $this->file['height'] = $imageInfo[1];
-            $this->file['type'] = $imageInfo['mime'];
-            $this->file['size'] = $size;
+            if (file_exists($this->file['disk'])) {
+                $size = filesize($this->file['disk']);
+                $imageInfo = getimagesize($this->file['disk']);
+                $this->file['width'] = $imageInfo[0];
+                $this->file['height'] = $imageInfo[1];
+                $this->file['type'] = $imageInfo['mime'];
+                $this->file['size'] = $size;
+            } else {
+                $this->file['width'] = 0;
+                $this->file['height'] = 0;
+                $this->file['type'] = 0;
+                $this->file['size'] = 0;
+            }
             return $this->file;
         }
         return null;
@@ -371,26 +378,77 @@ class ImageManager
     {
         return $this->config->transport()->getTitle($title, $limit, $page);
     }
-
-
-    public function drop(array $images = []): ImageManager
+    
+    /**
+     * Delete image server and use information
+     *
+     * @param array|null $images
+     * @return $this
+     */
+    public function drop(array $images = null): ImageManager
     {
-
+        if (is_null($images) && $this->isLoadImage()) {
+            $images[] = $this->file;
+        }
+        $dropList = [];
+        foreach ($images as $image) {
+            if (!isset($image['id'])) {
+                continue;
+            }
+            $dropList[] = $image['id'];
+            // drop file riginal
+            if (file_exists($image['disk'])) {
+                unlink($image['disk']);
+            }
+            // drop file cache
+            if (isset($image['cache']) && is_array($image['cache'])) {
+                foreach ($image['cache'] as $img) {
+                    if (file_exists($img['disk'])) {
+                        unlink($img['disk']);
+                    }
+                }
+            }
+        }
+        // drop in DB
+        $this->config->transport()->dropImage($dropList);
         return $this;
     }
 
+    /**
+     * Include use image in component item
+     *
+     * @param array $images
+     * @param int $item
+     * @param string $component
+     * @return $this
+     */
     public function setUse(array $images = [], int $item = 0, string $component = 'default'): ImageManager
     {
         $this->config->transport()->setUse($images, $item, $component);
         return $this;
     }
 
+    /**
+     * Drop use images in component item
+     *
+     * @param array $images
+     * @param int $item
+     * @param string $component
+     * @return $this
+     */
     public function dropUse(array $images = [], int $item = 0, string $component = 'default'): ImageManager
     {
         $this->config->transport()->dropUse($images, $item, $component);
         return $this;
     }
 
+    /**
+     * Get list images use in component item
+     *
+     * @param int $item
+     * @param string $component
+     * @return array
+     */
     public function getUse(int $item = 0, string $component = 'default'): array
     {
         return $this->config->transport()->getUse($item, $component);

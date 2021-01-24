@@ -11,6 +11,10 @@ use Illuminate\Database\Eloquent\Collection;
 
 class EloquentTransport extends AbstractTransport
 {
+    /**
+     * @param string $hash
+     * @return bool
+     */
     public function existsHash(string $hash): bool
     {
         if (Images::where('hash', $hash)->exists()) {
@@ -20,6 +24,12 @@ class EloquentTransport extends AbstractTransport
         }
     }
 
+    /**
+     * Search image by hash
+     *
+     * @param string $hash
+     * @return array
+     */
     public function getByHash(string $hash): ?array
     {
         $image = Images::where('hash', $hash)->first();
@@ -30,6 +40,12 @@ class EloquentTransport extends AbstractTransport
         }
     }
 
+    /**
+     * Search image by id
+     *
+     * @param int $id
+     * @return array
+     */
     public function getByID(int $id): ?array
     {
         $image = Images::where('id', $id)->first();
@@ -40,6 +56,15 @@ class EloquentTransport extends AbstractTransport
         }
     }
 
+    /**
+     * Search image by filesize (bytes)
+     *
+     * @param int|null $minBytes
+     * @param int|null $maxBytes
+     * @param int $limit
+     * @param int $page
+     * @return array
+     */
     public function getBySize(int $minBytes = null, int $maxBytes = null, int $limit = 10, int $page = 1): array
     {
         try {
@@ -50,6 +75,17 @@ class EloquentTransport extends AbstractTransport
         return $this->resultListToArray($images);
     }
 
+    /**
+     * Search for an image by a range of width and height
+     *
+     * @param int|null $minWidth
+     * @param int|null $maxWidth
+     * @param int|null $minHeight
+     * @param int|null $maxHeight
+     * @param int $limit
+     * @param int $page
+     * @return array
+     */
     public function getRange(int $minWidth = null, int $maxWidth = null, int $minHeight = null, int $maxHeight = null, int $limit = 10, int $page = 1): array
     {
         try {
@@ -60,6 +96,14 @@ class EloquentTransport extends AbstractTransport
         return $this->resultListToArray($images);
     }
 
+    /**
+     * Search for an image by a title
+     *
+     * @param string|null $title
+     * @param int $limit
+     * @param int $page
+     * @return array
+     */
     public function getTitle(string $title = null, int $limit = 10, int $page = 1): array
     {
         try {
@@ -70,6 +114,12 @@ class EloquentTransport extends AbstractTransport
         return $this->resultListToArray($images);
     }
 
+    /**
+     * Save image to DB
+     *
+     * @param array $image
+     * @return int - ID image
+     */
     public function save(array $image): int
     {
         // is not hash
@@ -186,6 +236,12 @@ class EloquentTransport extends AbstractTransport
         return $images;
     }
 
+    /**
+     * Laravel Collection to array
+     *
+     * @param Collection $list
+     * @return array
+     */
     public function resultListToArray(Collection $list): array
     {
         $images = [];
@@ -195,6 +251,13 @@ class EloquentTransport extends AbstractTransport
         return $images;
     }
 
+    /**
+     * Set use image in component item
+     *
+     * @param array $images
+     * @param int $item
+     * @param string $component
+     */
     public function setUse(array $images = [], int $item = 0, string $component = 'default'): void
     {
         $insert = [];
@@ -211,6 +274,13 @@ class EloquentTransport extends AbstractTransport
         ImageUse::insert($insert);
     }
 
+    /**
+     * Drop use image in component item
+     *
+     * @param array $images
+     * @param int $item
+     * @param string $component
+     */
     public function dropUse(array $images = [], int $item = 0, string $component = 'default'): void
     {
         $dropListID = [];
@@ -221,13 +291,20 @@ class EloquentTransport extends AbstractTransport
             }
         }
         if (count($dropListID) > 0) {
-            ImageUse::whereIn('component', $component)
+            ImageUse::where('component', $component)
                 ->where('item_id', $item)
                 ->whereIn('id', $dropListID)
                 ->delete();
         }
     }
 
+    /**
+     * Get use image in component item
+     *
+     * @param int $item
+     * @param string $component
+     * @return array
+     */
     public function getUse(int $item, string $component): array
     {
         $list = [];
@@ -236,5 +313,14 @@ class EloquentTransport extends AbstractTransport
             $list[$image->id] = $this->imageToArray($image->getImage);
         }
         return $list;
+    }
+
+    /**
+     * @param array $dropListID
+     */
+    public function dropImage(array $dropListID = []): void
+    {
+        Images::whereIn('id', $dropListID)->delete();
+        ImageUse::whereIn('image_id', $dropListID)->delete();
     }
 }

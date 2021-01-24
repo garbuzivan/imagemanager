@@ -42,7 +42,27 @@ class DefaultTransport extends AbstractTransport
         // TODO: Implement updateResize() method.
     }
 
-    public function getTitle(string $title = null, int $limit, int $page): array
+    public function getTitle(string $title, int $limit, int $page): array
+    {
+        return [];
+    }
+
+    public function setUse(array $images = [], int $item = 0, string $component = 'default'): void
+    {
+        // TODO: Implement setUse() method.
+    }
+
+    public function dropUse(array $images = [], int $item = 0, string $component = 'default'): void
+    {
+        // TODO: Implement dropUse() method.
+    }
+
+    public function dropImage(array $images = []): void
+    {
+        // TODO: Implement dropImage() method.
+    }
+
+    public function getUse(int $item, string $component): array
     {
         return [];
     }
