@@ -6,6 +6,7 @@ namespace GarbuzIvan\ImageManager\Transport;
 
 use ErrorException;
 use GarbuzIvan\ImageManager\Models\Images;
+use GarbuzIvan\ImageManager\Models\ImageUse;
 use Illuminate\Database\Eloquent\Collection;
 
 class EloquentTransport extends AbstractTransport
@@ -192,5 +193,48 @@ class EloquentTransport extends AbstractTransport
             $images[$image->id] = $this->imageToArray($image);
         }
         return $images;
+    }
+
+    public function setUse(array $images = [], int $item = 0, string $component = 'default'): void
+    {
+        $insert = [];
+        foreach ($images as $image) {
+            if (!isset($image['id'])) {
+                continue;
+            }
+            $insert[] = [
+                'image_id' => $image['id'],
+                'item_id' => $item,
+                'component' => $component,
+            ];
+        }
+        ImageUse::insert($insert);
+    }
+
+    public function dropUse(array $images = [], int $item = 0, string $component = 'default'): void
+    {
+        $dropListID = [];
+        foreach ($images as $id) {
+            $id = intval($id);
+            if (intval($id) > 0) {
+                $dropListID[] = $id;
+            }
+        }
+        if (count($dropListID) > 0) {
+            ImageUse::whereIn('component', $component)
+                ->where('item_id', $item)
+                ->whereIn('id', $dropListID)
+                ->delete();
+        }
+    }
+
+    public function getUse(int $item, string $component): array
+    {
+        $list = [];
+        $use = ImageUse::where('component', $component)->where('item_id', $item)->get();
+        foreach ($use as $image) {
+            $list[$image->id] = $this->imageToArray($image->getImage);
+        }
+        return $list;
     }
 }

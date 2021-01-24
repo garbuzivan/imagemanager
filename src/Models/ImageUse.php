@@ -29,6 +29,6 @@ class ImageUse extends Model
      */
     public function getImage()
     {
-        return $this->hasOne('GarbuzIvan\ImageManager\Models\Images', 'id', 'image_id');
+        return $this->hasOne('\GarbuzIvan\ImageManager\Models\Images', 'id', 'image_id');
     }
 }

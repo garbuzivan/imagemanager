@@ -98,4 +98,31 @@ abstract class AbstractTransport
      * @return void
      */
     abstract public function update(array $image): void;
+
+    /**
+     * Set use image in component item
+     *
+     * @param array $images
+     * @param int $item
+     * @param string $component
+     */
+    abstract public function setUse(array $images = [], int $item = 0, string $component = 'default'): void;
+
+    /**
+     * Drop use image in component item
+     *
+     * @param array $images
+     * @param int $item
+     * @param string $component
+     */
+    abstract public function dropUse(array $images = [], int $item = 0, string $component = 'default'): void;
+
+    /**
+     * Get use image in component item
+     *
+     * @param int $item
+     * @param string $component
+     * @return array
+     */
+    abstract public function getUse(int $item, string $component): array;
 }

@@ -359,8 +359,40 @@ class ImageManager
         return $this->config->transport()->getRange($minWidth, $maxWidth, $minHeight, $maxHeight, $limit, $page);
     }
 
+    /**
+     * Search for an image by a title
+     *
+     * @param string|null $title
+     * @param int $limit
+     * @param int $page
+     * @return array
+     */
     public function getTitle(string $title = null, int $limit = 10, int $page = 1): array
     {
         return $this->config->transport()->getTitle($title, $limit, $page);
+    }
+
+
+    public function drop(array $images = []): ImageManager
+    {
+
+        return $this;
+    }
+
+    public function setUse(array $images = [], int $item = 0, string $component = 'default'): ImageManager
+    {
+        $this->config->transport()->setUse($images, $item, $component);
+        return $this;
+    }
+
+    public function dropUse(array $images = [], int $item = 0, string $component = 'default'): ImageManager
+    {
+        $this->config->transport()->dropUse($images, $item, $component);
+        return $this;
+    }
+
+    public function getUse(int $item = 0, string $component = 'default'): array
+    {
+        return $this->config->transport()->getUse($item, $component);
     }
 }
