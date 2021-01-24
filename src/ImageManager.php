@@ -378,7 +378,7 @@ class ImageManager
     {
         return $this->config->transport()->getTitle($title, $limit, $page);
     }
-    
+
     /**
      * Delete image server and use information
      *
@@ -387,8 +387,12 @@ class ImageManager
      */
     public function drop(array $images = null): ImageManager
     {
-        if (is_null($images) && $this->isLoadImage()) {
-            $images[] = $this->file;
+        if (is_null($images)) {
+            if ($this->isLoadImage()) {
+                $images[] = $this->file;
+            } else {
+                $images = [];
+            }
         }
         $dropList = [];
         foreach ($images as $image) {
@@ -397,7 +401,7 @@ class ImageManager
             }
             $dropList[] = $image['id'];
             // drop file riginal
-            if (file_exists($image['disk'])) {
+            if (isset($image['disk']) && file_exists($image['disk'])) {
                 unlink($image['disk']);
             }
             // drop file cache
