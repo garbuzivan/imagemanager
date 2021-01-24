@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager;
 
-use GarbuzIvan\ImageManager\ExceptionCode;
 use GarbuzIvan\ImageManager\Exceptions\MakeDirectoryException;
 
 class File
@@ -48,6 +47,11 @@ class File
         return (new \finfo(FILEINFO_MIME_TYPE))->buffer($string);
     }
 
+    /**
+     * @param $string
+     * @param $mimeTypes
+     * @return string
+     */
     public function getExtensionFromString($string, $mimeTypes): string
     {
         $mimeType = $this->getMimeTypeFromString($string);

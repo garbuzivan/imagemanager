@@ -34,12 +34,19 @@ class ImageManagerServiceProvider extends ServiceProvider
 
     }
 
-    protected function configPath()
+    /**
+     * @return string
+     */
+    protected function configPath(): string
     {
         return __DIR__ . '/../config';
     }
 
-    protected function publishPath($configFile)
+    /**
+     * @param $configFile
+     * @return string
+     */
+    protected function publishPath($configFile): string
     {
         if (function_exists('config_path')) {
             return config_path($configFile);
