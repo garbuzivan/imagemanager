@@ -201,21 +201,9 @@ class EloquentTransport extends AbstractTransport
     public function update(array $image): void
     {
         if (isset($image['id']) && $image['id'] > 0) {
-            $update = [
-                'width' => $image['width'] ?? null,
-                'height' => $image['height'] ?? null,
-                'type' => $image['type'] ?? null,
-                'size' => $image['size'] ?? null,
-            ];
-            $cache = $this->getImageCacheFromDb($image);
-            if (!is_null($cache)) {
-                $cache = json_encode($cache);
-            }
-            $update['cache'] = $cache;
-            if (isset($image['title'])) {
-                $update['title'] = $image['title'];
-            }
-            Images::where('id', $image['id'])->update($update);
+            $id = $image['id'];
+            unset($image['id']);
+            Images::where('id', $id)->update($image);
         }
     }
 
@@ -316,11 +304,11 @@ class EloquentTransport extends AbstractTransport
     }
 
     /**
-     * @param array $dropListID
+     * @param int $id
      */
-    public function dropImage(array $dropListID = []): void
+    public function dropImage(int $id): void
     {
-        Images::whereIn('id', $dropListID)->delete();
-        ImageUse::whereIn('image_id', $dropListID)->delete();
+        Images::where('id', $id)->delete();
+        ImageUse::where('image_id', $id)->delete();
     }
 }

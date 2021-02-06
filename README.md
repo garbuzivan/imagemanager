@@ -29,16 +29,19 @@
 `$image = new GarbuzIvan\ImageManager\ImageManager($config);`
 
 ### Загрузка ищображения по ссылке
-`$image->loadUrl('https://zebrains.ru/static/images/intep_case_preview.4865ac.jpg');`
+`$img = $image->load('https://zebrains.ru/static/images/intep_case_preview.4865ac.jpg');`
 
 ### Загрузка ищображения из файла
-`$image->loadFile($_FILES["fileToUpload"]["tmp_name"]);`
+`$img = $image->load($_FILES["fileToUpload"]["tmp_name"]);`
 
 ### Загрузка ищображения из строки base64
-`$image->loadBase64('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAAB3RJTUUH1ggDCwMADQ4NnwAAAFVJREFUGJWNkMEJADEIBEcbSDkXUnfSgnBVeZ8LSAjiwjyEQXSFEIcHGP9oAi+H0Bymgx9MhxbFdZE2a0s9kTZdw01ZhhYkABSwgmf1Z6r1SNyfFf4BZ+ZUExcNUQUAAAAASUVORK5CYII=');`
+`$img = $image->load('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAABmJLR0QA/wD/AP+gvaeTAAAAB3RJTUUH1ggDCwMADQ4NnwAAAFVJREFUGJWNkMEJADEIBEcbSDkXUnfSgnBVeZ8LSAjiwjyEQXSFEIcHGP9oAi+H0Bymgx9MhxbFdZE2a0s9kTZdw01ZhhYkABSwgmf1Z6r1SNyfFf4BZ+ZUExcNUQUAAAAASUVORK5CYII=');`
 
 ### Сохранение загруженного файла $title название изображения, удобно использовать для поиску по содержимому и в СЕО
-`$image->save(string $title = null);`
+`$img->save(string $title = null);`
+
+### Вывод изображения на экран
+`echo $img->response();`
 
 ### Поиск изображения по ID
 `$image->getByID(1)->getImage();`
@@ -116,6 +119,16 @@
 `$list = $ImageManager->getTitle('%Звезды%', 10, 1);`
 
 `$ImageManager->drop($list);`
+
+
+<pre>
+$config = new \GarbuzIvan\ImageManager\Laravel\Config;
+$imageManager = new \GarbuzIvan\ImageManager\ImageManager($config);
+$img = $imageManager->load('https://zebrains.ru/static/images/intep_case_preview.4865ac.jpg')->save();
+$imageManager->setUse([['id' => 13], ['id' => 13], ['id' => 13]], 2, 'test');
+$imageManager->dropUse([1], 2, 'test');
+dd($imageManager->getUse(2, 'test'));
+</pre>
 
 
 ### Конфигурация пакета

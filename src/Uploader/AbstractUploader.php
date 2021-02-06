@@ -30,4 +30,12 @@ abstract class AbstractUploader
      * @return string
      */
     abstract public function load(string $object): string;
+
+    /**
+     * The load methods are called to load through the method ImageManager->load()
+     *
+     * @param string $object
+     * @return string
+     */
+    abstract public function pipe(string $object): ?string;
 }

@@ -28,4 +28,21 @@ class File extends AbstractUploader
         }
         return file_get_contents($file);
     }
+
+    /**
+     * The load methods are called to load through the method ImageManager->load()
+     *
+     * @param string $object
+     * @return string
+     */
+    public function pipe(string $object): ?string
+    {
+        try {
+            return $this->load($object);
+        } catch (FileNotExistsException|MimeTypeNotAvailableException $e) {
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 }

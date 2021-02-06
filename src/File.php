@@ -57,4 +57,18 @@ class File
         $mimeType = $this->getMimeTypeFromString($string);
         return array_search($mimeType, $mimeTypes);
     }
+
+    /**
+     * @param string|null $name
+     * @param string $hash
+     * @param string $extension
+     * @return string
+     */
+    public function getNameImage(?string $name, string $hash, string $extension): string
+    {
+        $name = preg_replace('~[^0-9a-zA-Z-_\.]~isuU', '', $name);
+        $name = mb_strlen($name) == 0 ? $hash : $name;
+        $name = str_ireplace($extension, '', $name) . $extension;
+        return $name;
+    }
 }

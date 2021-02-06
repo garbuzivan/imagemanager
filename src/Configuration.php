@@ -6,6 +6,8 @@ namespace GarbuzIvan\ImageManager;
 
 use GarbuzIvan\ImageManager\Transport\AbstractTransport;
 use GarbuzIvan\ImageManager\Transport\DefaultTransport;
+use GarbuzIvan\ImageManager\Pipes\AbstractPipes;
+use GarbuzIvan\ImageManager\Uploader\AbstractUploader;
 
 class Configuration
 {
@@ -93,6 +95,15 @@ class Configuration
      * @var null
      */
     protected $transportObject = null;
+
+    /**
+     * @var array
+     */
+    protected array $uploaders = [
+        \GarbuzIvan\ImageManager\Uploader\File::class,
+        \GarbuzIvan\ImageManager\Uploader\Base64::class,
+        \GarbuzIvan\ImageManager\Uploader\Url::class,
+    ];
 
     /**
      * @param $url
@@ -217,7 +228,22 @@ class Configuration
      */
     public function setPipes(array $pipes): void
     {
-        $this->pipes = $pipes;
+        $this->pipes = [];
+        foreach ($pipes as $pipe) {
+            if (get_parent_class($pipe) == AbstractPipes::class) {
+                $this->pipes[] = $pipe;
+            }
+        }
+    }
+
+    /**
+     * @param string $pipe
+     */
+    public function setPipe(string $pipe): void
+    {
+        if (get_parent_class($pipe) == AbstractPipes::class) {
+            $this->pipes[] = $pipe;
+        }
     }
 
     /**
@@ -226,6 +252,37 @@ class Configuration
     public function getPipes(): array
     {
         return $this->pipes;
+    }
+
+    /**
+     * @param array $pipes
+     */
+    public function setUploaders(array $pipes): void
+    {
+        $this->uploaders = [];
+        foreach ($pipes as $pipe) {
+            if (get_parent_class($pipe) == AbstractUploader::class) {
+                $this->uploaders[] = $pipe;
+            }
+        }
+    }
+
+    /**
+     * @param string $pipe
+     */
+    public function setUploader(string $pipe): void
+    {
+        if (get_parent_class($pipe) == AbstractUploader::class) {
+            $this->uploaders[] = $pipe;
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getUploaders(): array
+    {
+        return $this->uploaders;
     }
 
     /**

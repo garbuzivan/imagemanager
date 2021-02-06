@@ -31,6 +31,12 @@ return [
         \GarbuzIvan\ImageManager\Pipes\Optimizer::class,
     ],
 
+    'uploaders' =>  [
+        \GarbuzIvan\ImageManager\Uploader\File::class,
+        \GarbuzIvan\ImageManager\Uploader\Base64::class,
+        \GarbuzIvan\ImageManager\Uploader\Url::class,
+    ],
+
     'transport' => \GarbuzIvan\ImageManager\Transport\EloquentTransport::class,
 
 ];

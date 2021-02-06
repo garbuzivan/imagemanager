@@ -57,7 +57,7 @@ class DefaultTransport extends AbstractTransport
         // TODO: Implement dropUse() method.
     }
 
-    public function dropImage(array $images = []): void
+    public function dropImage(int $id): void
     {
         // TODO: Implement dropImage() method.
     }

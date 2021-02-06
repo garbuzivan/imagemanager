@@ -51,6 +51,10 @@ class Config extends Configuration
         if(is_array($pipes)){
             $this->setPipes($pipes);
         }
+        $uploaders = config($this->configFile . '.uploaders');
+        if(is_array($uploaders)){
+            $this->setUploaders($uploaders);
+        }
         $this->setTransport(config($this->configFile . '.transport'));
         return $this;
     }

@@ -44,4 +44,21 @@ class Url extends AbstractUploader
 
         return $output;
     }
+
+    /**
+     * The load methods are called to load through the method ImageManager->load()
+     *
+     * @param string $object
+     * @return string
+     */
+    public function pipe(string $object): ?string
+    {
+        try {
+            return $this->load($object);
+        } catch (FilterValidateUrlException | MimeTypeNotAvailableException | UrlNotLoadException | \Exception $e) {
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 }

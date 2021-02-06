@@ -20,7 +20,7 @@ class Base64 extends AbstractUploader
     {
         // base64 string
         $identifier = 'data:image/';
-        if(mb_substr($image, 0, mb_strlen($identifier)) != $identifier){
+        if (mb_substr($image, 0, mb_strlen($identifier)) != $identifier) {
             throw new FilterValidateBase64ImageException(ExceptionCode::$FILTER_VALIDATE_BASE64_IMAGE);
         }
         // content type
@@ -29,10 +29,27 @@ class Base64 extends AbstractUploader
             throw new MimeTypeNotAvailableException(ExceptionCode::$MIME_TYPE_NOT_AVAILABLE);
         }
         // get image
-        $replace = substr($image, 0, strpos($image, ',')+1);
+        $replace = substr($image, 0, strpos($image, ',') + 1);
         $image = str_replace([$replace, ' '], ['', '+'], $image);
         $image = base64_decode($image);
 
         return $image;
+    }
+
+    /**
+     * The load methods are called to load through the method ImageManager->load()
+     *
+     * @param string $object
+     * @return string
+     */
+    public function pipe(string $object): ?string
+    {
+        try {
+            return $this->load($object);
+        } catch (MimeTypeNotAvailableException|FilterValidateBase64ImageException $e) {
+            return null;
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }
