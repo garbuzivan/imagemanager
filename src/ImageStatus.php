@@ -165,9 +165,9 @@ class ImageStatus
             $update = [];
         }
         $update['width'] = $image['width'];
-        $update['height'] = $image['width'];
-        $update['type'] = $image['width'];
-        $update['size'] = $image['width'];
+        $update['height'] = $image['height'];
+        $update['type'] = $image['type'];
+        $update['size'] = $image['size'];
         $update['id'] = $this->file['id'];
         $this->config->transport()->update($update);
         return $this;
