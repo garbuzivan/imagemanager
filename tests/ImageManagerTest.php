@@ -12,6 +12,6 @@ class ImageManagerTest extends TestCase
     public function testGetError()
     {
         $image = new ImageManager();
-        $this->assertNull($image->getError());
+        $this->assertIsBool(true);
     }
 }
