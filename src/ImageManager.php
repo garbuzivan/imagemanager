@@ -30,9 +30,9 @@ class ImageManager
     public function load(string $object): ImageStatus
     {
         $image = null;
-        foreach ($this->config->getUploaders() as $uploadClass){
+        foreach ($this->config->getUploaders() as $uploadClass) {
             $image = (new $uploadClass($this->config))->pipe($object);
-            if(!is_null($image)){
+            if (!is_null($image)) {
                 return new ImageStatus($image, $this->config);
             }
         }
@@ -115,6 +115,9 @@ class ImageManager
      */
     public function setUse(array $images = [], int $item = 0, string $component = 'default'): ImageManager
     {
+        if (is_array($images) && isset($images['id'])) {
+            $images[] = $images;
+        }
         $this->config->transport()->setUse($images, $item, $component);
         return $this;
     }
