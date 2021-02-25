@@ -311,4 +311,9 @@ class EloquentTransport extends AbstractTransport
         Images::where('id', $id)->delete();
         ImageUse::where('image_id', $id)->delete();
     }
+
+    public function clear(int $item = 0, string $component = 'default'): void
+    {
+        ImageUse::where('component', $component)->where('item_id', $item)->delete();
+    }
 }

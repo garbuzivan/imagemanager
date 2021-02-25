@@ -66,4 +66,9 @@ class DefaultTransport extends AbstractTransport
     {
         return [];
     }
+
+    public function clear(int $item = 0, string $component = 'default'): void
+    {
+        // TODO: Implement clear() method.
+    }
 }

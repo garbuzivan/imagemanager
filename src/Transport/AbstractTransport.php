@@ -118,6 +118,14 @@ abstract class AbstractTransport
     abstract public function dropUse(array $images = [], int $item = 0, string $component = 'default'): void;
 
     /**
+     * Clear use all images in component item
+     *
+     * @param int $item
+     * @param string $component
+     */
+    abstract public function clear(int $item = 0, string $component = 'default'): void;
+
+    /**
      * @param int $id
      */
     abstract public function dropImage(int $id): void;

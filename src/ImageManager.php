@@ -111,12 +111,16 @@ class ImageManager
      * @param array $images
      * @param int $item
      * @param string $component
+     * @param bool $clear
      * @return $this
      */
-    public function setUse(array $images = [], int $item = 0, string $component = 'default'): ImageManager
+    public function setUse(array $images = [], int $item = 0, string $component = 'default', bool $clear = false): ImageManager
     {
         if (is_array($images) && isset($images['id'])) {
             $images[] = $images;
+        }
+        if($clear){
+            $this->config->transport()->clear($item, $component);
         }
         $this->config->transport()->setUse($images, $item, $component);
         return $this;
