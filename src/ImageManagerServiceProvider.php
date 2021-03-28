@@ -31,7 +31,10 @@ class ImageManagerServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        $this->app->singleton(ImageManager::class, function ($app) {
+            $config = new \GarbuzIvan\ImageManager\Laravel\Config;
+            return new ImageManager($config);
+        });
     }
 
     /**
