@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GarbuzIvan\ImageManager;
 
+use GarbuzIvan\ImageManager\Laravel\Config;
 use Illuminate\Support\ServiceProvider;
 
 class ImageManagerServiceProvider extends ServiceProvider
@@ -31,9 +32,11 @@ class ImageManagerServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(Config::class, function ($app) {
+            return new Config;
+        });
         $this->app->singleton(ImageManager::class, function ($app) {
-            $config = new \GarbuzIvan\ImageManager\Laravel\Config;
-            return new ImageManager($config);
+            return new ImageManager(app(Config::class));
         });
     }
 
