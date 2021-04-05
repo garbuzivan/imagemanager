@@ -110,7 +110,10 @@ class ImageStatus
         // trasport save
         if ($update) {
             $this->file['id'] = $idImage;
-            $this->config->transport()->update($this->file);
+            $update = $this->file;
+            unset($update['disk']);
+            unset($update['url']);
+            $this->config->transport()->update($update);
         } else {
             $this->file['id'] = $this->config->transport()->save($this->getImage());
         }
