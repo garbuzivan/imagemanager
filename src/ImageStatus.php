@@ -63,9 +63,9 @@ class ImageStatus
         }
         $update = isset($this->file['disk']) && !file_exists($this->file['disk']);
         $fileHandler = new File();
-        if($update){
+        if ($update) {
             $idImage = $this->file['id'];
-            $disk = $this->file['disk'];
+            $disk = str_replace($this->file['name'], null, $this->file['disk']);
             $hash = $this->file['hash'];
             $name = $this->file['name'];
             $title = $this->file['title'];
@@ -108,7 +108,7 @@ class ImageStatus
         // save image cache size
         $this->saveResize();
         // trasport save
-        if($update){
+        if ($update) {
             $this->file['id'] = $idImage;
             $this->config->transport()->update($this->file);
         } else {
