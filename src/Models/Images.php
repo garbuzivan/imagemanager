@@ -20,7 +20,14 @@ class Images extends Model
     protected $fillable = [
         'hash',
         'name',
+        'title',
         'path',
+        'width',
+        'height',
+        'type',
+        'size',
+        'cache',
+        'use',
     ];
 
     /**

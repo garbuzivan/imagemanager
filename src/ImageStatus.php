@@ -221,23 +221,23 @@ class ImageStatus
      */
     public function getImage(): ?array
     {
-        if (!is_null($this->file) && is_array($this->file)) {
-            if (file_exists($this->file['disk'])) {
-                $size = filesize($this->file['disk']);
-                $imageInfo = getimagesize($this->file['disk']);
-                $this->file['width'] = $imageInfo[0];
-                $this->file['height'] = $imageInfo[1];
-                $this->file['type'] = $imageInfo['mime'];
-                $this->file['size'] = $size;
-            } else {
-                $this->file['width'] = 0;
-                $this->file['height'] = 0;
-                $this->file['type'] = 0;
-                $this->file['size'] = 0;
-            }
-            return $this->file;
+        if (is_null($this->file) || !is_array($this->file)) {
+            return null;
         }
-        return null;
+        if (file_exists($this->file['disk'])) {
+            $size = filesize($this->file['disk']);
+            $imageInfo = getimagesize($this->file['disk']);
+            $this->file['width'] = $imageInfo[0];
+            $this->file['height'] = $imageInfo[1];
+            $this->file['type'] = $imageInfo['mime'];
+            $this->file['size'] = $size;
+        } else {
+            $this->file['width'] = 0;
+            $this->file['height'] = 0;
+            $this->file['type'] = 0;
+            $this->file['size'] = 0;
+        }
+        return $this->file;
     }
 
     /**
