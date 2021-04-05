@@ -61,17 +61,28 @@ class ImageStatus
         if (is_null($this->image) || (isset($this->file['disk']) && file_exists($this->file['disk']))) {
             return $this;
         }
+        $update = isset($this->file['disk']) && !file_exists($this->file['disk']);
         $fileHandler = new File();
-        // args
-        $extension = '.' . $fileHandler->getExtensionFromString($this->image, $this->config->getMimeTypes());
-        $hash = (new Hash)->getHashString($this->image);
-        $name = $fileHandler->getNameImage($name, $hash, $extension);
-        $pathDate = !is_null($path) ? $path : date('/Y/m/d/H/m/');
-        $title = !is_null($title) ? $title : null;
-        $disk = $this->config->getPathDisk() . $pathDate;
-        $disk = (str_replace('//', '/', $disk));
-        $path = (str_replace('//', '/', $pathDate . $name));
-        $url = $this->config->getPathUrl() . $pathDate . $name;
+        if($update){
+            $idImage = $this->file['id'];
+            $disk = $this->file['disk'];
+            $hash = $this->file['hash'];
+            $name = $this->file['name'];
+            $title = $this->file['title'];
+            $path = $this->file['path'];
+            $url = $this->file['url'];
+        } else {
+            // args
+            $extension = '.' . $fileHandler->getExtensionFromString($this->image, $this->config->getMimeTypes());
+            $hash = (new Hash)->getHashString($this->image);
+            $name = $fileHandler->getNameImage($name, $hash, $extension);
+            $pathDate = !is_null($path) ? $path : date('/Y/m/d/H/m/');
+            $title = !is_null($title) ? $title : null;
+            $disk = $this->config->getPathDisk() . $pathDate;
+            $disk = (str_replace('//', '/', $disk));
+            $path = (str_replace('//', '/', $pathDate . $name));
+            $url = $this->config->getPathUrl() . $pathDate . $name;
+        }
         // create path
         try {
             $makeDirectory = $fileHandler->makeDirectory($disk);
@@ -97,7 +108,12 @@ class ImageStatus
         // save image cache size
         $this->saveResize();
         // trasport save
-        $this->file['id'] = $this->config->transport()->save($this->getImage());
+        if($update){
+            $this->file['id'] = $idImage;
+            $this->config->transport()->update($this->file);
+        } else {
+            $this->file['id'] = $this->config->transport()->save($this->getImage());
+        }
         return $this;
     }
 
