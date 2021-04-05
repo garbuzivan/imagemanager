@@ -58,45 +58,46 @@ class ImageStatus
      */
     public function save(string $title = null, string $name = null, string $path = null): ImageStatus
     {
-        if (!is_null($this->image) && is_null($this->file)) {
-            $fileHandler = new File();
-            // args
-            $extension = '.' . $fileHandler->getExtensionFromString($this->image, $this->config->getMimeTypes());
-            $hash = (new Hash)->getHashString($this->image);
-            $name = $fileHandler->getNameImage($name, $hash, $extension);
-            $pathDate = !is_null($path) ? $path : date('/Y/m/d/H/m/');
-            $title = !is_null($title) ? $title : null;
-            $disk = $this->config->getPathDisk() . $pathDate;
-            $disk = (str_replace('//', '/', $disk));
-            $path = (str_replace('//', '/', $pathDate . $name));
-            $url = $this->config->getPathUrl() . $pathDate . $name;
-            // create path
-            try {
-                $makeDirectory = $fileHandler->makeDirectory($disk);
-            } catch (Exceptions\MakeDirectoryException $e) {
-                return $this;
-            }
-            // save image to file
-            if (isset($makeDirectory)) {
-                $disk .= $name;
-                $fileHandler->save($disk, $this->image);
-                $this->file = [
-                    'hash' => $hash,
-                    'title' => $title,
-                    'name' => $name,
-                    'disk' => $disk,
-                    'path' => $path,
-                    'url' => $url,
-                    'cache' => [],
-                ];
-            }
-            // Start Pipes
-            $this->pipes();
-            // save image cache size
-            $this->saveResize();
-            // trasport save
-            $this->file['id'] = $this->config->transport()->save($this->getImage());
+        if (is_null($this->image) || (isset($this->file['disk']) && file_exists($this->file['disk']))) {
+            return $this;
         }
+        $fileHandler = new File();
+        // args
+        $extension = '.' . $fileHandler->getExtensionFromString($this->image, $this->config->getMimeTypes());
+        $hash = (new Hash)->getHashString($this->image);
+        $name = $fileHandler->getNameImage($name, $hash, $extension);
+        $pathDate = !is_null($path) ? $path : date('/Y/m/d/H/m/');
+        $title = !is_null($title) ? $title : null;
+        $disk = $this->config->getPathDisk() . $pathDate;
+        $disk = (str_replace('//', '/', $disk));
+        $path = (str_replace('//', '/', $pathDate . $name));
+        $url = $this->config->getPathUrl() . $pathDate . $name;
+        // create path
+        try {
+            $makeDirectory = $fileHandler->makeDirectory($disk);
+        } catch (Exceptions\MakeDirectoryException $e) {
+            return $this;
+        }
+        // save image to file
+        if (isset($makeDirectory)) {
+            $disk .= $name;
+            $fileHandler->save($disk, $this->image);
+            $this->file = [
+                'hash' => $hash,
+                'title' => $title,
+                'name' => $name,
+                'disk' => $disk,
+                'path' => $path,
+                'url' => $url,
+                'cache' => [],
+            ];
+        }
+        // Start Pipes
+        $this->pipes();
+        // save image cache size
+        $this->saveResize();
+        // trasport save
+        $this->file['id'] = $this->config->transport()->save($this->getImage());
         return $this;
     }
 
@@ -161,7 +162,7 @@ class ImageStatus
             return $this;
         }
         $image = $this->getImage();
-        if(is_null($update)){
+        if (is_null($update)) {
             $update = [];
         }
         $update['width'] = $image['width'];
