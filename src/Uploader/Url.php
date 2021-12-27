@@ -38,7 +38,14 @@ class Url extends AbstractUploader
 
         // Exception MIME TYPE NOT AVAILABLE
         $contentType = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
-        if (!in_array($contentType, $this->config->getMimeTypes())) {
+        $notFound = true;
+        foreach ($this->config->getMimeTypes() as $mimeType) {
+            if (strripos($contentType, $mimeType) !== false ){
+                $notFound = false;
+                break;
+            }
+        }
+        if ($notFound) {
             throw new MimeTypeNotAvailableException(ExceptionCode::$MIME_TYPE_NOT_AVAILABLE);
         }
 
